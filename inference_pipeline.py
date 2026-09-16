@@ -1,7 +1,7 @@
 """
 Building Height Estimation from Monocular Street-View Imagery
 ============================================================
-Hierarchical Reference-Object & Inter-Building Calibrated Pipeline
+Hierarchical Reference-Object Calibrated Pipeline (Prioritizing Ground Anchors)
 """
 
 import os
@@ -20,7 +20,7 @@ from tqdm import tqdm
 
 DEFAULT_FOV_DEG = 95.0
 DEFAULT_HOUSE_CONF = 0.40
-DEFAULT_REF_CONF = 0.50
+DEFAULT_REF_CONF = 0.40
 DEFAULT_IOU_THRESH = 0.50
 
 REF_HEIGHTS = {
@@ -42,11 +42,10 @@ COCO_REF_CLASSES = {
     8: "truck",
 }
 
-MAX_DIRECT_REF_X_DIST_PX = 200
-MIN_REF_HEIGHT_PX = 35
-MIN_REF_WIDTH_PX = 15
+MIN_REF_HEIGHT_PX = 25
+MIN_REF_WIDTH_PX = 12
 FALLBACK_Z_MIN_M = 5.0
-FALLBACK_Z_MAX_M = 13.0
+FALLBACK_Z_MAX_M = 15.0
 FALLBACK_HEIGHT_BOOST = 1.20
 
 
@@ -147,7 +146,7 @@ def robust_roofline_and_base(d_norm, x1, y1, x2, y2, img_h):
 def get_ref_height(ref_class, box_w, box_h):
     if ref_class == "car":
         aspect = box_w / max(box_h, 1)
-        if aspect > 2.5:
+        if aspect > 2.2:
             return REF_HEIGHTS["car_sedan"], "car(sedan)"
         return REF_HEIGHTS["car_suv"], "car(SUV)"
     return REF_HEIGHTS.get(ref_class, 1.50), ref_class
@@ -177,8 +176,6 @@ def fallback_height(h_pixel, d_val, img_w, fov_deg):
 
 
 class BuildingHeightEstimator:
-    """Hierarchical Reference-Calibrated Building Height Estimator."""
-
     def __init__(self, m1_path, m2_path, fov_deg=DEFAULT_FOV_DEG, device=None):
         if device is None:
             self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -186,7 +183,7 @@ class BuildingHeightEstimator:
             self.device = torch.device(device)
 
         self.fov_deg = fov_deg
-        print(f"[Estimator] Initializing models on {self.device} (FOV = {self.fov_deg}°)...")
+        print(f"[Estimator] Loading models on {self.device} (FOV = {self.fov_deg}°)...")
 
         self.m1 = get_finetuned_model(7)
         self.m1.load_state_dict(torch.load(m1_path, map_location=self.device))
@@ -204,7 +201,7 @@ class BuildingHeightEstimator:
             model="depth-anything/Depth-Anything-V2-Small-hf",
             device=dev_id
         )
-        print("[Estimator] All models ready with Hierarchical Calibration.")
+        print("[Estimator] All models ready.")
 
     def estimate(self, image_input):
         if isinstance(image_input, str):
@@ -293,19 +290,22 @@ class BuildingHeightEstimator:
             })
             hid += 1
 
-        class_priority = {"car": 5, "bus": 4, "truck": 4, "person": 2, "motorcycle": 1, "bicycle": 1}
+        # 1. HIGH-PREFERENCE VEHICLE GROUND ANCHOR SEARCH
+        # Vehicles (cars, buses, trucks) sitting in the lower ground frontage of the building
+        class_priority = {"car": 10, "bus": 9, "truck": 9, "motorcycle": 3, "person": 2, "bicycle": 1}
         for h in prepped_houses:
             hx1, hy1, hx2, hy2 = h["ext_box"]
-            house_w = hx2 - hx1
             best_ref = None
             best_score = -1.0
 
             for ref in ref_objects:
                 rx1, ry1, rx2, ry2 = [int(v) for v in ref["box"]]
                 ref_cx = (rx1 + rx2) / 2.0
-                x_dist = abs(h["cx"] - ref_cx)
+                ref_cy = (ry1 + ry2) / 2.0
                 
-                if x_dist > (house_w * 0.75 + 50):
+                # Check horizontal overlap with building boundary
+                is_horiz_aligned = (hx1 - 80) <= ref_cx <= (hx2 + 80)
+                if not is_horiz_aligned:
                     continue
 
                 ref_w, ref_h = rx2 - rx1, ry2 - ry1
@@ -313,18 +313,22 @@ class BuildingHeightEstimator:
                     continue
 
                 ref_depth = get_depth_value(d_norm, rx1, ry1, rx2, ry2)
-                if ref_depth < 10:
+                if ref_depth < 8:
                     continue
 
                 ref_real_h, ref_label = get_ref_height(ref["ref_class"], ref_w, ref_h)
                 raw_ratio = ref_depth / h["depth"] if h["depth"] > 5 else 1.0
-                depth_ratio = float(np.clip(raw_ratio, 0.5, 2.0))
+                depth_ratio = float(np.clip(raw_ratio, 0.6, 1.8))
 
-                cls_wt = class_priority.get(ref["ref_class"], 1) / 5.0
+                # Weight vehicles heavily
+                cls_wt = class_priority.get(ref["ref_class"], 1) / 10.0
                 conf_wt = ref["score"]
-                prox_wt = max(0, 1.0 - (x_dist / (house_w + 50)))
                 
-                total_s = cls_wt * 0.4 + conf_wt * 0.3 + prox_wt * 0.3
+                # Proximity to ground line
+                dist_to_center = abs(ref_cx - h["cx"]) / max((hx2 - hx1), 1)
+                prox_wt = max(0, 1.0 - dist_to_center)
+
+                total_s = cls_wt * 0.5 + conf_wt * 0.3 + prox_wt * 0.2
                 if total_s > best_score:
                     best_score = total_s
                     best_ref = {
@@ -337,10 +341,9 @@ class BuildingHeightEstimator:
                         "score": total_s
                     }
 
-            if best_ref and best_ref["score"] >= 0.45:
-                cos_factor = max(0.65, math.cos(h["theta_rad"]))
+            if best_ref and best_ref["score"] >= 0.30:
                 raw_h_m = (h["h_px"] / best_ref["ref_h_px"]) * best_ref["ref_real_h"] * best_ref["depth_ratio"]
-                h["calibrated_h_m"] = raw_h_m * cos_factor
+                h["calibrated_h_m"] = raw_h_m
                 h["method"] = f"ref:{best_ref['ref_label']}"
                 h["direct_ref"] = best_ref
                 h["ref_box_used"] = best_ref["ref_box"]
@@ -348,6 +351,7 @@ class BuildingHeightEstimator:
                 ref_dist = (best_ref["ref_real_h"] * f_pixel) / best_ref["ref_h_px"]
                 h["distance_m"] = ref_dist / best_ref["depth_ratio"] if best_ref["depth_ratio"] > 0.1 else ref_dist
 
+        # 2. PASS 2: Inter-Building Reference Transfer
         anchor_houses = [h for h in prepped_houses if h["calibrated_h_m"] is not None and "car" in h["method"]]
         if not anchor_houses:
             anchor_houses = [h for h in prepped_houses if h["calibrated_h_m"] is not None]
@@ -357,11 +361,9 @@ class BuildingHeightEstimator:
                 closest_anchor = min(anchor_houses, key=lambda a: abs(h["cx"] - a["cx"]))
                 x_separation = abs(h["cx"] - closest_anchor["cx"])
                 
-                if x_separation < (nw * 0.65):
+                if x_separation < (nw * 0.70):
                     depth_ratio = float(np.clip(closest_anchor["depth"] / max(h["depth"], 1), 0.6, 1.8))
-                    cos_corr = math.cos(h["theta_rad"]) / max(math.cos(closest_anchor["theta_rad"]), 0.1)
-                    
-                    transferred_h = closest_anchor["calibrated_h_m"] * (h["h_px"] / closest_anchor["h_px"]) * depth_ratio * cos_corr
+                    transferred_h = closest_anchor["calibrated_h_m"] * (h["h_px"] / closest_anchor["h_px"]) * depth_ratio
                     
                     h["calibrated_h_m"] = transferred_h
                     h["distance_m"] = closest_anchor["distance_m"] / max(depth_ratio, 0.1)
@@ -400,7 +402,7 @@ class BuildingHeightEstimator:
             real_h_m = float(h["calibrated_h_m"])
             house_dist = float(h["distance_m"])
             method = h["method"]
-            floors = max(1, int(round(real_h_m / 3.0)))
+            floors = max(1, int(round(real_h_m / 3.2)))
 
             color = (0, 255, 0) if h["cand"]["model"] == "Unified-2000" else (255, 180, 0)
             cv2.rectangle(annotated, (x1, y1), (x2, y2), color, 1)
@@ -444,33 +446,3 @@ class BuildingHeightEstimator:
             })
 
         return annotated, buildings
-
-
-def main():
-    parser = argparse.ArgumentParser(description="Estimate building heights from street-view imagery.")
-    parser.add_argument("--input", "-i", type=str, required=True, help="Path to input image or directory")
-    parser.add_argument("--output", "-o", type=str, default="output_showcase", help="Output directory")
-    parser.add_argument("--m1", type=str, default="mask_rcnn_model_2000_fixed.pth", help="Model 1 weights")
-    parser.add_argument("--m2", type=str, default="mask_rcnn_model_july_400.pth", help="Model 2 weights")
-    parser.add_argument("--fov", type=float, default=95.0, help="Camera FOV in degrees")
-    args = parser.parse_args()
-
-    os.makedirs(args.output, exist_ok=True)
-    estimator = BuildingHeightEstimator(args.m1, args.m2, fov_deg=args.fov)
-
-    paths = [args.input] if os.path.isfile(args.input) else sorted(
-        glob.glob(os.path.join(args.input, "*.png")) +
-        glob.glob(os.path.join(args.input, "*.jpg")) +
-        glob.glob(os.path.join(args.input, "*.jpeg"))
-    )
-
-    for p in tqdm(paths):
-        bname = os.path.basename(p)
-        annotated, _ = estimator.estimate(p)
-        cv2.imwrite(os.path.join(args.output, f"pred_{bname}"), annotated)
-
-    print(f"\n[Done] Outputs saved to '{args.output}'.")
-
-
-if __name__ == "__main__":
-    main()

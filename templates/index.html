@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building Height & Zoning Compliance AI</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Leaflet.js GIS Maps -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        .gradient-header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0369a1 100%);
+        }
+        #map { height: 280px; width: 100%; border-radius: 0.75rem; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col font-sans">
+
+    <!-- Header Navigation -->
+    <header class="gradient-header text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-sky-500/20 flex items-center justify-center border border-sky-400/30 text-sky-400 text-xl font-bold">
+                    <i class="fa-solid fa-city"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight">UrbanVision AI</h1>
+                    <p class="text-xs text-sky-200">Monocular Building Height & Municipal Height Violation Detector</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3 text-xs">
+                <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Ensemble Pipeline Active
+                </span>
+                <span class="px-3 py-1 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30">
+                    <i class="fa-solid fa-satellite mr-1"></i> GIS Zoning DB Connected
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Left Column: Upload & Configuration (5 cols) -->
+            <div class="lg:col-span-5 space-y-6">
+                
+                <!-- Upload Card -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                    <h2 class="text-base font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-cloud-arrow-up text-sky-600"></i> Upload Street-View Imagery
+                    </h2>
+
+                    <!-- Drag & Drop Dropzone -->
+                    <div id="dropzone" class="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center hover:border-sky-500 hover:bg-sky-50/50 transition-all cursor-pointer">
+                        <input type="file" id="fileInput" accept="image/*" class="hidden">
+                        <div id="dropzoneContent" class="space-y-3">
+                            <div class="w-12 h-12 mx-auto rounded-full bg-sky-100 text-sky-600 flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-image"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-slate-700">Drag & drop image here, or <span class="text-sky-600 underline">browse</span></p>
+                                <p class="text-xs text-slate-400 mt-1">Supports PNG, JPG, JPEG with auto-GPS extraction from filename or EXIF</p>
+                            </div>
+                        </div>
+                        <img id="imagePreview" class="hidden max-h-48 mx-auto rounded-lg shadow-sm" alt="Preview">
+                    </div>
+
+                    <!-- GPS Location Settings -->
+                    <div class="mt-5 space-y-3">
+                        <div class="flex justify-between items-center">
+                            <label class="text-xs font-semibold text-slate-600 uppercase tracking-wider">Location / GPS Settings</label>
+                            <span id="gpsDetectedBadge" class="text-[11px] font-medium text-slate-400">Auto-extracted from image</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs text-slate-500 mb-1">Latitude</label>
+                                <input type="text" id="latInput" placeholder="e.g. 28.6139" class="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-500 mb-1">Longitude</label>
+                                <input type="text" id="lonInput" placeholder="e.g. 77.2090" class="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Sample Presets -->
+                    <div class="mt-4 pt-4 border-t border-slate-100">
+                        <span class="text-xs text-slate-400 block mb-2">Try Sample Coordinate Presets:</span>
+                        <div class="flex flex-wrap gap-2 text-xs">
+                            <button onclick="setSampleLocation(28.6139, 77.2090, 'Residential Zone R-1')" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-md">Zone R-1 (9m Limit)</button>
+                            <button onclick="setSampleLocation(28.5355, 77.3910, 'Residential Zone R-2')" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-md">Zone R-2 (12m Limit)</button>
+                            <button onclick="setSampleLocation(28.4595, 77.0266, 'Commercial C-1')" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-md">Commercial (15m Limit)</button>
+                        </div>
+                    </div>
+
+                    <!-- Analyze Action Button -->
+                    <button id="analyzeBtn" onclick="runAnalysis()" disabled class="w-full mt-6 py-3 px-4 bg-sky-600 hover:bg-sky-700 disabled:bg-slate-300 text-white font-semibold text-sm rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-calculator"></i> Estimate Height & Check Compliance
+                    </button>
+                </div>
+
+                <!-- GIS Map Card -->
+                <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+                    <h3 class="text-sm font-semibold text-slate-900 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-map-location-dot text-sky-600"></i> Municipal Zoning Map
+                    </h3>
+                    <div id="map"></div>
+                    <div id="zoneSummaryText" class="text-xs text-slate-500 mt-2">
+                        Pin shows estimated building coordinates. Colored region represents active zoning boundary.
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: Visual Results & Compliance Breakdown (7 cols) -->
+            <div class="lg:col-span-7 space-y-6">
+
+                <!-- Placeholder Empty State -->
+                <div id="emptyState" class="bg-white rounded-2xl p-12 text-center shadow-sm border border-slate-200 flex flex-col items-center justify-center min-h-[460px]">
+                    <div class="w-16 h-16 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center text-3xl mb-4">
+                        <i class="fa-solid fa-ruler-combined"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-slate-800">No Image Analyzed Yet</h3>
+                    <p class="text-sm text-slate-500 max-w-sm mt-1">Upload a street-view image on the left to run building segmentation, relative depth calibration, and municipal zoning violation checks.</p>
+                </div>
+
+                <!-- Loading State -->
+                <div id="loadingState" class="hidden bg-white rounded-2xl p-12 text-center shadow-sm border border-slate-200 flex flex-col items-center justify-center min-h-[460px]">
+                    <div class="w-12 h-12 border-4 border-sky-200 border-t-sky-600 rounded-full animate-spin mb-4"></div>
+                    <h3 class="text-base font-semibold text-slate-800">Processing Inference Pipeline...</h3>
+                    <p class="text-xs text-slate-400 max-w-xs mt-1">1. Detecting Buildings & Reference Objects<br>2. Dense Disparity Mapping<br>3. Reference Scaling & Zoning Comparison</p>
+                </div>
+
+                <!-- Results View -->
+                <div id="resultsView" class="hidden space-y-6">
+
+                    <!-- Status Overall Banner -->
+                    <div id="complianceBanner" class="rounded-2xl p-4 flex items-center justify-between border shadow-sm">
+                        <div class="flex items-center space-x-3">
+                            <div id="complianceIcon" class="w-10 h-10 rounded-xl flex items-center justify-center text-xl"></div>
+                            <div>
+                                <h3 id="complianceTitle" class="text-base font-bold"></h3>
+                                <p id="complianceSubtitle" class="text-xs opacity-90"></p>
+                            </div>
+                        </div>
+                        <div id="violationCountBadge" class="text-xs font-semibold px-3 py-1.5 rounded-lg"></div>
+                    </div>
+
+                    <!-- Annotated Image Display -->
+                    <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Visual Output with Compliance Tags</span>
+                            <a id="downloadImageBtn" href="#" download="analyzed_output.jpg" class="text-xs text-sky-600 hover:text-sky-800 font-medium flex items-center gap-1">
+                                <i class="fa-solid fa-download"></i> Save Image
+                            </a>
+                        </div>
+                        <div class="rounded-xl overflow-hidden bg-slate-900 border border-slate-200">
+                            <img id="annotatedResultImg" class="w-full object-contain" alt="Analyzed Result">
+                        </div>
+                    </div>
+
+                    <!-- Individual Building Breakdown Cards -->
+                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+                        <h4 class="text-sm font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-sky-600"></i> Detected Buildings & Height Analysis
+                        </h4>
+                        <div id="buildingCardsContainer" class="space-y-3"></div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-400">
+        UrbanVision AI • Capstone Senior Design Project • Reference-Calibrated Monocular Vision & Municipal GIS
+    </footer>
+
+    <!-- App JavaScript Logic -->
+    <script>
+        let selectedFile = null;
+        let map, marker, zoneCircle;
+
+        function initMap(lat = 28.6139, lon = 77.2090, zoneRadius = 5000) {
+            if (!map) {
+                map = L.map('map').setView([lat, lon], 12);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '© OpenStreetMap'
+                }).addTo(map);
+            } else {
+                map.setView([lat, lon], 12);
+            }
+
+            if (marker) map.removeLayer(marker);
+            if (zoneCircle) map.removeLayer(zoneCircle);
+
+            marker = L.marker([lat, lon]).addTo(map).bindPopup("<b>Target Location</b>").openPopup();
+            zoneCircle = L.circle([lat, lon], {
+                color: '#0284c7',
+                fillColor: '#38bdf8',
+                fillOpacity: 0.15,
+                radius: zoneRadius
+            }).addTo(map);
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            initMap();
+        });
+
+        const dropzone = document.getElementById("dropzone");
+        const fileInput = document.getElementById("fileInput");
+        const analyzeBtn = document.getElementById("analyzeBtn");
+        const imagePreview = document.getElementById("imagePreview");
+        const dropzoneContent = document.getElementById("dropzoneContent");
+
+        dropzone.addEventListener("click", () => fileInput.click());
+        fileInput.addEventListener("change", (e) => handleFileSelect(e.target.files[0]));
+
+        dropzone.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            dropzone.classList.add("border-sky-500", "bg-sky-50");
+        });
+        dropzone.addEventListener("dragleave", () => {
+            dropzone.classList.remove("border-sky-500", "bg-sky-50");
+        });
+        dropzone.addEventListener("drop", (e) => {
+            e.preventDefault();
+            dropzone.classList.remove("border-sky-500", "bg-sky-50");
+            if (e.dataTransfer.files.length > 0) handleFileSelect(e.dataTransfer.files[0]);
+        });
+
+        function handleFileSelect(file) {
+            if (!file || !file.type.startsWith("image/")) return;
+            selectedFile = file;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                imagePreview.src = e.target.result;
+                imagePreview.classList.remove("hidden");
+                dropzoneContent.classList.add("hidden");
+            };
+            reader.readAsDataURL(file);
+
+            analyzeBtn.disabled = false;
+
+            const fn = file.name;
+            const coordMatch = fn.match(/(?:lat[_-]?)?(-?\d{1,3}\.\d{3,8})[_\-, ]+(?:lon[_-]?)?(-?\d{1,3}\.\d{3,8})/i);
+            if (coordMatch) {
+                document.getElementById("latInput").value = coordMatch[1];
+                document.getElementById("lonInput").value = coordMatch[2];
+                document.getElementById("gpsDetectedBadge").textContent = "✓ Extracted from filename";
+                document.getElementById("gpsDetectedBadge").className = "text-[11px] font-medium text-emerald-600";
+                initMap(parseFloat(coordMatch[1]), parseFloat(coordMatch[2]));
+            } else {
+                document.getElementById("gpsDetectedBadge").textContent = "Using regional default / manual input";
+                document.getElementById("gpsDetectedBadge").className = "text-[11px] font-medium text-slate-400";
+            }
+        }
+
+        function setSampleLocation(lat, lon, label) {
+            document.getElementById("latInput").value = lat;
+            document.getElementById("lonInput").value = lon;
+            document.getElementById("gpsDetectedBadge").textContent = `Preset: ${label}`;
+            initMap(lat, lon);
+        }
+
+        async function runAnalysis() {
+            if (!selectedFile) return;
+
+            document.getElementById("emptyState").classList.add("hidden");
+            document.getElementById("resultsView").classList.add("hidden");
+            document.getElementById("loadingState").classList.remove("hidden");
+            analyzeBtn.disabled = true;
+
+            const formData = new FormData();
+            formData.append("image", selectedFile);
+            const lat = document.getElementById("latInput").value;
+            const lon = document.getElementById("lonInput").value;
+            if (lat) formData.append("latitude", lat);
+            if (lon) formData.append("longitude", lon);
+
+            try {
+                const response = await fetch("/api/analyze", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const result = await response.json();
+                document.getElementById("loadingState").classList.add("hidden");
+                analyzeBtn.disabled = false;
+
+                if (result.status === "success") {
+                    renderResults(result);
+                } else {
+                    alert("Analysis error: " + result.message);
+                    document.getElementById("emptyState").classList.remove("hidden");
+                }
+            } catch (err) {
+                document.getElementById("loadingState").classList.add("hidden");
+                analyzeBtn.disabled = false;
+                alert("Network error: " + err.message);
+                document.getElementById("emptyState").classList.remove("hidden");
+            }
+        }
+
+        function renderResults(data) {
+            const comp = data.compliance;
+            const zone = comp.zone_info;
+            const buildings = comp.buildings;
+
+            initMap(data.gps.latitude, data.gps.longitude, zone.radius_meters || 5000);
+            document.getElementById("zoneSummaryText").innerHTML = `<b>${zone.zone_name}</b> (${zone.jurisdiction}) — Height Limit: <b>${zone.max_allowed_height_m}m</b> (${zone.max_allowed_floors} Floors)`;
+
+            const banner = document.getElementById("complianceBanner");
+            const icon = document.getElementById("complianceIcon");
+            const title = document.getElementById("complianceTitle");
+            const subtitle = document.getElementById("complianceSubtitle");
+            const badge = document.getElementById("violationCountBadge");
+
+            if (comp.has_violation) {
+                banner.className = "rounded-2xl p-4 flex items-center justify-between border shadow-sm bg-rose-50 border-rose-200 text-rose-900";
+                icon.className = "w-10 h-10 rounded-xl flex items-center justify-center text-xl bg-rose-500 text-white";
+                icon.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+                title.textContent = "Height Violation Detected!";
+                subtitle.textContent = `One or more buildings exceed the ${zone.max_allowed_height_m}m municipal limit for this zone.`;
+                badge.className = "text-xs font-semibold px-3 py-1.5 rounded-lg bg-rose-200 text-rose-800";
+                badge.textContent = "ILLEGAL STRUCTURES FLAGGED";
+            } else {
+                banner.className = "rounded-2xl p-4 flex items-center justify-between border shadow-sm bg-emerald-50 border-emerald-200 text-emerald-900";
+                icon.className = "w-10 h-10 rounded-xl flex items-center justify-center text-xl bg-emerald-500 text-white";
+                icon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+                title.textContent = "All Structures Compliant";
+                subtitle.textContent = `All detected building heights are within the ${zone.max_allowed_height_m}m permissible limit.`;
+                badge.className = "text-xs font-semibold px-3 py-1.5 rounded-lg bg-emerald-200 text-emerald-800";
+                badge.textContent = "100% LEGAL COMPLIANCE";
+            }
+
+            const imgEl = document.getElementById("annotatedResultImg");
+            imgEl.src = comp.annotated_image_b64;
+            document.getElementById("downloadImageBtn").href = comp.annotated_image_b64;
+
+            const container = document.getElementById("buildingCardsContainer");
+            container.innerHTML = "";
+
+            if (buildings.length === 0) {
+                container.innerHTML = '<p class="text-xs text-slate-400 italic">No buildings detected in image.</p>';
+            }
+
+            buildings.forEach(b => {
+                const isIllegal = b.status === "ILLEGAL";
+                const isWarn = b.status === "WARNING";
+                
+                const cardBorder = isIllegal ? "border-rose-300 bg-rose-50/40" : (isWarn ? "border-amber-300 bg-amber-50/40" : "border-slate-200 bg-white");
+                const badgeStyle = isIllegal ? "bg-rose-100 text-rose-700 border-rose-200" : (isWarn ? "bg-amber-100 text-amber-700 border-amber-200" : "bg-emerald-100 text-emerald-700 border-emerald-200");
+
+                const cardHtml = `
+                    <div class="p-4 rounded-xl border ${cardBorder} flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 transition-all">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm font-bold text-slate-800">Building #${b.house_id}</span>
+                                <span class="px-2 py-0.5 text-[11px] font-semibold rounded border ${badgeStyle}">${b.status}</span>
+                                ${b.is_top_clipped ? '<span class="px-2 py-0.5 text-[10px] bg-amber-100 text-amber-800 rounded font-medium">Frame Clipped</span>' : ''}
+                            </div>
+                            <p class="text-xs text-slate-500">
+                                Calibration Anchor: <span class="font-medium text-slate-700">${b.method}</span> • 
+                                Est. Distance: <span class="font-medium text-slate-700">${b.distance_m}m</span> • 
+                                Model Confidence: <span class="font-medium text-slate-700">${b.confidence}%</span>
+                            </p>
+                        </div>
+                        <div class="text-right flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto gap-2">
+                            <div>
+                                <span class="text-lg font-black ${isIllegal ? 'text-rose-600' : 'text-slate-900'}">${b.height_m} m</span>
+                                <span class="text-xs text-slate-500">(~${b.estimated_floors} Floors)</span>
+                            </div>
+                            <span class="text-[11px] ${isIllegal ? 'text-rose-600 font-semibold' : 'text-slate-400'}">
+                                ${isIllegal ? `Exceeds limit by +${b.height_difference_m}m` : `Limit: ${b.max_allowed_height_m}m`}
+                            </span>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += cardHtml;
+            });
+
+            document.getElementById("resultsView").classList.remove("hidden");
+        }
+    </script>
+</body>
+</html>

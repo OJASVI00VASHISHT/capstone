@@ -1,0 +1,412 @@
+dataset,image_name,output_filename,house_id,confidence,model,method,height_m,floors,distance_m,is_top_clipped
+august_test,Screenshot 2026-08-29 002959.png,aug_Screenshot 2026-08-29 002959.png,1,0.72,M1,ref:person,12.17,4,22.39,True
+august_test,Screenshot 2026-08-29 002959.png,aug_Screenshot 2026-08-29 002959.png,2,1.00,M2,ref:person,9.50,3,29.86,False
+august_test,Screenshot 2026-08-29 002959.png,aug_Screenshot 2026-08-29 002959.png,3,1.00,M2,ref:person,8.04,3,32.23,False
+august_test,Screenshot 2026-08-29 002959.png,aug_Screenshot 2026-08-29 002959.png,4,0.97,M2,ref:person,7.92,3,36.25,False
+august_test,Screenshot 2026-08-29 003021.png,aug_Screenshot 2026-08-29 003021.png,1,0.78,M2,ref:car(SUV),9.08,3,2.68,False
+august_test,Screenshot 2026-08-29 003021.png,aug_Screenshot 2026-08-29 003021.png,2,0.97,M1,ref:car(SUV),8.10,3,3.04,False
+august_test,Screenshot 2026-08-29 003021.png,aug_Screenshot 2026-08-29 003021.png,3,0.99,M2,ref:car(SUV),8.08,3,3.29,False
+august_test,Screenshot 2026-08-29 003033.png,aug_Screenshot 2026-08-29 003033.png,1,0.99,M2,fallback,8.14,3,7.72,False
+august_test,Screenshot 2026-08-29 003033.png,aug_Screenshot 2026-08-29 003033.png,2,0.99,M2,fallback,7.11,2,6.63,False
+august_test,Screenshot 2026-08-29 003033.png,aug_Screenshot 2026-08-29 003033.png,3,0.95,M2,fallback,5.74,2,8.77,False
+august_test,Screenshot 2026-08-29 003048.png,aug_Screenshot 2026-08-29 003048.png,1,1.00,M1,ref:car(sedan),9.40,3,2.93,False
+august_test,Screenshot 2026-08-29 003048.png,aug_Screenshot 2026-08-29 003048.png,2,1.00,M1,ref:car(sedan),8.62,3,2.93,False
+august_test,Screenshot 2026-08-29 003048.png,aug_Screenshot 2026-08-29 003048.png,3,0.99,M1,ref:car(SUV),7.49,2,6.96,True
+august_test,Screenshot 2026-08-29 003805.png,aug_Screenshot 2026-08-29 003805.png,1,0.92,M1,ref:car(SUV),5.63,2,5.95,False
+august_test,Screenshot 2026-08-29 003816.png,aug_Screenshot 2026-08-29 003816.png,1,0.93,M2,ref:car(sedan),6.85,2,11.09,False
+august_test,Screenshot 2026-08-29 003839.png,aug_Screenshot 2026-08-29 003839.png,1,0.95,M2,fallback,2.25,1,10.60,False
+august_test,Screenshot 2026-08-29 003926.png,aug_Screenshot 2026-08-29 003926.png,1,0.99,M1,ref:car(SUV),5.25,2,6.45,False
+august_test,Screenshot 2026-08-29 003926.png,aug_Screenshot 2026-08-29 003926.png,2,0.59,M1,ref:car(SUV),4.90,2,5.92,False
+august_test,Screenshot 2026-08-29 003926.png,aug_Screenshot 2026-08-29 003926.png,3,0.62,M2,fallback,4.32,1,9.99,False
+august_test,Screenshot 2026-08-29 003953.png,aug_Screenshot 2026-08-29 003953.png,1,0.89,M2,fallback,3.46,1,10.39,False
+august_test,Screenshot 2026-08-29 004009.png,aug_Screenshot 2026-08-29 004009.png,1,0.40,M2,fallback,5.68,2,9.40,False
+august_test,Screenshot 2026-08-29 004118.png,aug_Screenshot 2026-08-29 004118.png,1,0.84,M1,fallback,3.20,1,7.58,False
+august_test,Screenshot 2026-08-29 004226.png,aug_Screenshot 2026-08-29 004226.png,1,0.55,M2,ref:motorcycle,3.35,1,2.75,False
+august_test,Screenshot 2026-08-29 004258.png,aug_Screenshot 2026-08-29 004258.png,1,0.42,M2,fallback,3.99,1,6.39,False
+august_test,Screenshot 2026-08-29 004258.png,aug_Screenshot 2026-08-29 004258.png,2,0.42,M2,fallback,3.40,1,7.06,False
+august_test,Screenshot 2026-08-29 004258.png,aug_Screenshot 2026-08-29 004258.png,3,0.99,M2,fallback,3.72,1,9.03,False
+august_test,Screenshot 2026-08-29 004258.png,aug_Screenshot 2026-08-29 004258.png,4,0.57,M2,fallback,4.36,1,6.76,False
+august_test,Screenshot 2026-08-29 004310.png,aug_Screenshot 2026-08-29 004310.png,1,0.56,M2,fallback,7.06,2,7.14,True
+august_test,Screenshot 2026-08-29 004327.png,aug_Screenshot 2026-08-29 004327.png,1,0.99,M2,fallback,2.80,1,9.11,False
+august_test,Screenshot 2026-08-29 004418.png,aug_Screenshot 2026-08-29 004418.png,1,0.86,M1,fallback,5.55,2,7.78,False
+august_test,Screenshot 2026-08-29 004418.png,aug_Screenshot 2026-08-29 004418.png,2,0.98,M2,ref:car(SUV),5.33,2,23.36,False
+august_test,Screenshot 2026-08-29 004418.png,aug_Screenshot 2026-08-29 004418.png,3,0.45,M2,fallback,4.97,2,7.36,False
+august_test,Screenshot 2026-08-29 004427.png,aug_Screenshot 2026-08-29 004427.png,1,0.58,M1,ref:car(SUV),5.85,2,3.02,False
+august_test,Screenshot 2026-08-29 004427.png,aug_Screenshot 2026-08-29 004427.png,2,0.90,M1,fallback,5.18,2,8.80,False
+august_test,Screenshot 2026-08-29 004427.png,aug_Screenshot 2026-08-29 004427.png,3,0.81,M1,ref:car(SUV),6.26,2,3.02,False
+august_test,Screenshot 2026-08-29 004434.png,aug_Screenshot 2026-08-29 004434.png,1,0.81,M2,ref:car(sedan),5.32,2,2.84,False
+august_test,Screenshot 2026-08-29 004434.png,aug_Screenshot 2026-08-29 004434.png,2,0.68,M2,ref:car(sedan),5.25,2,2.84,False
+august_test,Screenshot 2026-08-29 004434.png,aug_Screenshot 2026-08-29 004434.png,3,0.52,M1,fallback,6.97,2,8.31,False
+august_test,Screenshot 2026-08-29 004457.png,aug_Screenshot 2026-08-29 004457.png,1,1.00,M1,ref:person,14.80,5,10.86,False
+august_test,Screenshot 2026-08-29 004457.png,aug_Screenshot 2026-08-29 004457.png,2,1.00,M1,ref:car(sedan),9.65,3,12.94,False
+august_test,Screenshot 2026-08-29 004531.png,aug_Screenshot 2026-08-29 004531.png,1,0.89,M1,ref:truck,6.75,2,3.31,False
+august_test,Screenshot 2026-08-29 004531.png,aug_Screenshot 2026-08-29 004531.png,2,0.96,M2,ref:truck,5.49,2,6.33,False
+august_test,Screenshot 2026-08-29 004531.png,aug_Screenshot 2026-08-29 004531.png,3,0.46,M2,ref:truck,5.10,2,6.43,False
+august_test,Screenshot 2026-08-29 004545.png,aug_Screenshot 2026-08-29 004545.png,1,0.99,M1,ref:car(SUV),6.64,2,17.07,False
+august_test,Screenshot 2026-08-29 004545.png,aug_Screenshot 2026-08-29 004545.png,2,0.67,M2,ref:car(SUV),6.23,2,15.77,False
+august_test,Screenshot 2026-08-29 004545.png,aug_Screenshot 2026-08-29 004545.png,3,0.59,M2,ref:car(SUV),7.80,3,12.53,False
+august_test,Screenshot 2026-08-29 004603.png,aug_Screenshot 2026-08-29 004603.png,1,0.60,M1,ref:motorcycle,4.86,2,2.58,False
+august_test,Screenshot 2026-08-29 004603.png,aug_Screenshot 2026-08-29 004603.png,2,0.99,M2,fallback,5.89,2,7.78,False
+august_test,Screenshot 2026-08-29 004603.png,aug_Screenshot 2026-08-29 004603.png,3,0.85,M2,fallback,7.76,3,7.72,False
+august_test,Screenshot 2026-08-29 004603.png,aug_Screenshot 2026-08-29 004603.png,4,0.76,M2,fallback,8.25,3,7.72,False
+august_test,Screenshot 2026-08-29 004616.png,aug_Screenshot 2026-08-29 004616.png,1,0.84,M1,ref:car(SUV),6.72,2,2.79,True
+august_test,Screenshot 2026-08-29 004627.png,aug_Screenshot 2026-08-29 004627.png,1,0.95,M1,fallback,7.65,3,6.03,True
+august_test,Screenshot 2026-08-29 004705.png,aug_Screenshot 2026-08-29 004705.png,1,1.00,M1,ref:car(SUV),4.31,1,2.81,False
+august_test,Screenshot 2026-08-29 004728.png,aug_Screenshot 2026-08-29 004728.png,1,1.00,M2,fallback,5.52,2,8.18,False
+august_test,Screenshot 2026-08-29 004728.png,aug_Screenshot 2026-08-29 004728.png,2,0.85,M1,fallback,5.62,2,7.99,False
+august_test,Screenshot 2026-08-29 004757.png,aug_Screenshot 2026-08-29 004757.png,1,0.97,M2,ref:car(SUV),6.52,2,6.38,False
+august_test,Screenshot 2026-08-29 004757.png,aug_Screenshot 2026-08-29 004757.png,2,1.00,M1,ref:car(SUV),3.39,1,7.56,False
+august_test,Screenshot 2026-08-29 004804.png,aug_Screenshot 2026-08-29 004804.png,1,0.99,M1,ref:car(SUV),5.05,2,7.33,False
+august_test,Screenshot 2026-08-29 004804.png,aug_Screenshot 2026-08-29 004804.png,2,0.99,M1,ref:car(SUV),3.83,1,15.30,False
+august_test,Screenshot 2026-08-29 004820.png,aug_Screenshot 2026-08-29 004820.png,1,0.82,M1,ref:car(SUV),8.46,3,15.65,False
+august_test,Screenshot 2026-08-29 004820.png,aug_Screenshot 2026-08-29 004820.png,2,1.00,M1,ref:car(SUV),7.76,3,18.33,False
+august_test,Screenshot 2026-08-29 004831.png,aug_Screenshot 2026-08-29 004831.png,1,0.44,M2,fallback,4.61,2,7.58,False
+august_test,Screenshot 2026-08-29 004831.png,aug_Screenshot 2026-08-29 004831.png,2,0.98,M1,fallback,5.43,2,7.90,False
+august_test,Screenshot 2026-08-29 004831.png,aug_Screenshot 2026-08-29 004831.png,3,0.80,M2,fallback,4.43,1,8.05,False
+august_test,Screenshot 2026-08-29 004855.png,aug_Screenshot 2026-08-29 004855.png,1,0.99,M2,fallback,6.06,2,8.62,True
+august_test,Screenshot 2026-08-29 004855.png,aug_Screenshot 2026-08-29 004855.png,2,0.54,M2,fallback,5.73,2,8.66,True
+august_test,Screenshot 2026-08-29 004920.png,aug_Screenshot 2026-08-29 004920.png,1,0.99,M1,ref:car(sedan),5.98,2,2.65,False
+august_test,Screenshot 2026-08-29 004920.png,aug_Screenshot 2026-08-29 004920.png,2,1.00,M2,ref:car(sedan),6.34,2,2.65,False
+august_test,Screenshot 2026-08-29 004920.png,aug_Screenshot 2026-08-29 004920.png,3,0.97,M1,ref:car(SUV),7.55,3,3.02,False
+august_test,Screenshot 2026-08-29 004931.png,aug_Screenshot 2026-08-29 004931.png,1,0.96,M2,fallback,8.06,3,7.66,True
+august_test,Screenshot 2026-08-29 004931.png,aug_Screenshot 2026-08-29 004931.png,2,0.73,M2,fallback,8.57,3,8.21,True
+august_test,Screenshot 2026-08-29 004931.png,aug_Screenshot 2026-08-29 004931.png,3,1.00,M1,fallback,6.48,2,8.58,False
+august_test,Screenshot 2026-08-29 004931.png,aug_Screenshot 2026-08-29 004931.png,4,0.62,M2,ref:car(sedan),6.72,2,9.56,False
+august_test,Screenshot 2026-08-29 004945.png,aug_Screenshot 2026-08-29 004945.png,1,0.81,M1,ref:car(sedan),4.46,1,2.35,False
+august_test,Screenshot 2026-08-29 005001.png,aug_Screenshot 2026-08-29 005001.png,1,0.99,M1,fallback,5.38,2,9.03,False
+august_test,Screenshot 2026-08-29 005001.png,aug_Screenshot 2026-08-29 005001.png,2,0.87,M2,fallback,6.69,2,6.45,False
+august_test,Screenshot 2026-08-29 005001.png,aug_Screenshot 2026-08-29 005001.png,3,0.67,M2,fallback,6.27,2,8.92,False
+august_test,Screenshot 2026-08-29 005001.png,aug_Screenshot 2026-08-29 005001.png,4,0.97,M1,fallback,6.66,2,8.51,False
+august_test,Screenshot 2026-08-29 005012.png,aug_Screenshot 2026-08-29 005012.png,1,1.00,M1,fallback,7.85,3,8.41,True
+august_test,Screenshot 2026-08-29 005012.png,aug_Screenshot 2026-08-29 005012.png,2,1.00,M1,ref:person,7.50,3,27.66,False
+august_test,Screenshot 2026-08-29 005034.png,aug_Screenshot 2026-08-29 005034.png,1,0.98,M2,ref:car(SUV),10.06,3,4.02,False
+august_test,Screenshot 2026-08-29 005034.png,aug_Screenshot 2026-08-29 005034.png,2,0.82,M2,fallback,8.25,3,10.60,False
+august_test,Screenshot 2026-08-29 005034.png,aug_Screenshot 2026-08-29 005034.png,3,0.98,M2,ref:car(SUV),9.39,3,4.55,False
+august_test,Screenshot 2026-08-29 005034.png,aug_Screenshot 2026-08-29 005034.png,4,1.00,M1,fallback,7.86,3,10.44,False
+august_test,Screenshot 2026-08-29 005034.png,aug_Screenshot 2026-08-29 005034.png,5,0.98,M2,fallback,6.98,2,10.77,False
+august_test,Screenshot 2026-08-29 005127.png,aug_Screenshot 2026-08-29 005127.png,1,0.96,M1,ref:car(SUV),6.23,2,2.89,False
+august_test,Screenshot 2026-08-29 005127.png,aug_Screenshot 2026-08-29 005127.png,2,1.00,M2,ref:car(SUV),9.27,3,9.87,False
+august_test,Screenshot 2026-08-29 005127.png,aug_Screenshot 2026-08-29 005127.png,3,0.84,M2,ref:car(SUV),7.55,3,6.55,False
+august_test,Screenshot 2026-08-29 005127.png,aug_Screenshot 2026-08-29 005127.png,4,0.98,M2,ref:car(SUV),9.32,3,5.34,False
+august_test,Screenshot 2026-08-29 005141.png,aug_Screenshot 2026-08-29 005141.png,1,0.92,M2,ref:person,10.95,4,19.45,False
+august_test,Screenshot 2026-08-29 005141.png,aug_Screenshot 2026-08-29 005141.png,2,0.71,M2,ref:car(SUV),5.74,2,2.43,True
+august_test,Screenshot 2026-08-29 005141.png,aug_Screenshot 2026-08-29 005141.png,3,0.98,M2,ref:car(SUV),5.67,2,2.18,False
+august_test,Screenshot 2026-08-29 005141.png,aug_Screenshot 2026-08-29 005141.png,4,0.76,M2,ref:car(SUV),5.63,2,2.29,True
+august_test,Screenshot 2026-08-29 005154.png,aug_Screenshot 2026-08-29 005154.png,1,0.73,M1,ref:car(SUV),8.30,3,3.92,False
+august_test,Screenshot 2026-08-29 005154.png,aug_Screenshot 2026-08-29 005154.png,2,1.00,M2,ref:car(SUV),8.17,3,4.41,False
+august_test,Screenshot 2026-08-29 005154.png,aug_Screenshot 2026-08-29 005154.png,3,0.92,M1,ref:car(SUV),8.40,3,3.88,False
+august_test,Screenshot 2026-08-29 005154.png,aug_Screenshot 2026-08-29 005154.png,4,1.00,M1,ref:car(SUV),8.20,3,3.56,False
+august_test,Screenshot 2026-08-29 005154.png,aug_Screenshot 2026-08-29 005154.png,5,0.59,M2,ref:car(SUV),8.89,3,3.56,False
+august_test,Screenshot 2026-08-29 005154.png,aug_Screenshot 2026-08-29 005154.png,6,0.95,M2,ref:car(SUV),8.96,3,3.74,False
+august_test,Screenshot 2026-08-29 005205.png,aug_Screenshot 2026-08-29 005205.png,1,1.00,M2,ref:car(SUV),7.09,2,7.00,False
+august_test,Screenshot 2026-08-29 005205.png,aug_Screenshot 2026-08-29 005205.png,2,1.00,M2,ref:person,6.24,2,2.61,False
+august_test,Screenshot 2026-08-29 005205.png,aug_Screenshot 2026-08-29 005205.png,3,0.99,M1,ref:car(SUV),6.34,2,2.31,True
+august_test,Screenshot 2026-08-29 005214.png,aug_Screenshot 2026-08-29 005214.png,1,0.96,M2,fallback,7.61,3,9.94,False
+august_test,Screenshot 2026-08-29 005214.png,aug_Screenshot 2026-08-29 005214.png,2,1.00,M2,ref:car(SUV),6.59,2,2.77,False
+august_test,Screenshot 2026-08-29 005214.png,aug_Screenshot 2026-08-29 005214.png,3,1.00,M1,ref:car(SUV),6.02,2,2.77,False
+august_test,Screenshot 2026-08-29 005214.png,aug_Screenshot 2026-08-29 005214.png,4,1.00,M2,ref:person,8.85,3,4.37,False
+august_test,Screenshot 2026-08-29 005251.png,aug_Screenshot 2026-08-29 005251.png,1,0.97,M1,fallback,6.94,2,8.24,True
+august_test,Screenshot 2026-08-29 005251.png,aug_Screenshot 2026-08-29 005251.png,2,0.99,M2,fallback,7.53,3,8.18,True
+august_test,Screenshot 2026-08-29 005312.png,aug_Screenshot 2026-08-29 005312.png,1,0.98,M1,ref:car(SUV),6.20,2,5.70,False
+august_test,Screenshot 2026-08-29 005312.png,aug_Screenshot 2026-08-29 005312.png,2,0.56,M1,ref:car(SUV),8.72,3,7.06,False
+august_test,Screenshot 2026-08-29 005312.png,aug_Screenshot 2026-08-29 005312.png,3,1.00,M1,ref:car(SUV),6.51,2,3.76,False
+august_test,Screenshot 2026-08-29 005312.png,aug_Screenshot 2026-08-29 005312.png,4,0.87,M1,ref:car(SUV),8.29,3,6.23,False
+august_test,Screenshot 2026-08-29 005334.png,aug_Screenshot 2026-08-29 005334.png,1,0.76,M1,fallback,8.83,3,8.08,True
+august_test,Screenshot 2026-08-29 005357.png,aug_Screenshot 2026-08-29 005357.png,1,0.67,M2,fallback,7.10,2,6.94,True
+august_test,Screenshot 2026-08-29 005357.png,aug_Screenshot 2026-08-29 005357.png,2,0.41,M2,fallback,7.10,2,6.92,True
+august_test,Screenshot 2026-08-29 005357.png,aug_Screenshot 2026-08-29 005357.png,3,0.99,M2,fallback,6.04,2,8.58,False
+august_test,Screenshot 2026-08-29 005357.png,aug_Screenshot 2026-08-29 005357.png,4,0.92,M2,ref:car(sedan),7.52,3,18.88,False
+august_test,Screenshot 2026-08-29 005357.png,aug_Screenshot 2026-08-29 005357.png,5,0.80,M2,ref:car(sedan),6.65,2,15.10,False
+august_test,Screenshot 2026-08-29 005357.png,aug_Screenshot 2026-08-29 005357.png,6,1.00,M1,ref:car(sedan),6.83,2,15.45,False
+august_test,Screenshot 2026-08-29 005410.png,aug_Screenshot 2026-08-29 005410.png,1,0.82,M2,ref:car(SUV),8.47,3,13.00,False
+august_test,Screenshot 2026-08-29 005410.png,aug_Screenshot 2026-08-29 005410.png,2,0.93,M1,ref:car(SUV),8.76,3,10.99,False
+august_test,Screenshot 2026-08-29 005410.png,aug_Screenshot 2026-08-29 005410.png,3,1.00,M1,ref:car(SUV),8.06,3,8.24,False
+august_test,Screenshot 2026-08-29 005410.png,aug_Screenshot 2026-08-29 005410.png,4,0.99,M2,ref:car(SUV),5.83,2,4.02,False
+august_test,Screenshot 2026-08-29 005418.png,aug_Screenshot 2026-08-29 005418.png,1,0.51,M2,ref:car(SUV),7.13,2,29.07,True
+august_test,Screenshot 2026-08-29 005418.png,aug_Screenshot 2026-08-29 005418.png,2,1.00,M2,ref:car(SUV),8.36,3,15.41,False
+august_test,Screenshot 2026-08-29 005418.png,aug_Screenshot 2026-08-29 005418.png,3,0.48,M2,ref:car(SUV),9.71,3,15.11,False
+august_test,Screenshot 2026-08-29 005432.png,aug_Screenshot 2026-08-29 005432.png,1,1.00,M1,fallback,6.83,2,9.28,False
+august_test,Screenshot 2026-08-29 005432.png,aug_Screenshot 2026-08-29 005432.png,2,1.00,M1,ref:car(SUV),5.99,2,2.32,False
+august_test,Screenshot 2026-08-29 005432.png,aug_Screenshot 2026-08-29 005432.png,3,0.43,M1,ref:car(SUV),5.71,2,2.32,False
+august_test,Screenshot 2026-08-29 005432.png,aug_Screenshot 2026-08-29 005432.png,4,1.00,M1,ref:car(SUV),5.02,2,2.32,False
+august_test,Screenshot 2026-08-29 005441.png,aug_Screenshot 2026-08-29 005441.png,1,1.00,M1,ref:car(SUV),6.92,2,2.85,False
+august_test,Screenshot 2026-08-29 005441.png,aug_Screenshot 2026-08-29 005441.png,2,1.00,M1,ref:car(SUV),6.06,2,2.49,False
+august_test,Screenshot 2026-08-29 005441.png,aug_Screenshot 2026-08-29 005441.png,3,0.85,M2,ref:bicycle,4.31,1,6.85,False
+august_test,Screenshot 2026-08-29 005457.png,aug_Screenshot 2026-08-29 005457.png,1,0.43,M1,ref:car(SUV),7.00,2,3.32,False
+august_test,Screenshot 2026-08-29 005457.png,aug_Screenshot 2026-08-29 005457.png,2,1.00,M1,ref:car(SUV),7.37,2,3.32,False
+august_test,Screenshot 2026-08-29 005457.png,aug_Screenshot 2026-08-29 005457.png,3,1.00,M1,ref:car(SUV),7.01,2,2.67,True
+august_test,Screenshot 2026-08-29 005514.png,aug_Screenshot 2026-08-29 005514.png,1,0.99,M1,fallback,7.23,2,9.11,False
+august_test,Screenshot 2026-08-29 005514.png,aug_Screenshot 2026-08-29 005514.png,2,0.96,M2,ref:car(SUV),7.37,2,2.10,True
+august_test,Screenshot 2026-08-29 005613.png,aug_Screenshot 2026-08-29 005613.png,1,0.96,M1,fallback,8.31,3,8.08,False
+august_test,Screenshot 2026-08-29 005613.png,aug_Screenshot 2026-08-29 005613.png,2,1.00,M2,ref:car(SUV),6.49,2,2.25,False
+august_test,Screenshot 2026-08-29 005613.png,aug_Screenshot 2026-08-29 005613.png,3,0.96,M1,ref:car(SUV),4.70,2,2.22,False
+august_test,Screenshot 2026-08-29 005641.png,aug_Screenshot 2026-08-29 005641.png,1,1.00,M1,ref:car(SUV),8.49,3,5.43,False
+august_test,Screenshot 2026-08-29 005710.png,aug_Screenshot 2026-08-29 005710.png,1,0.88,M2,fallback,7.15,2,8.24,False
+august_test,Screenshot 2026-08-29 005710.png,aug_Screenshot 2026-08-29 005710.png,2,1.00,M1,ref:car(sedan),6.75,2,2.13,False
+august_test,Screenshot 2026-08-29 005710.png,aug_Screenshot 2026-08-29 005710.png,3,0.88,M1,ref:car(sedan),3.78,1,2.13,False
+august_test,Screenshot 2026-08-29 005726.png,aug_Screenshot 2026-08-29 005726.png,1,1.00,M1,ref:car(SUV),6.75,2,2.62,False
+august_test,Screenshot 2026-08-29 005726.png,aug_Screenshot 2026-08-29 005726.png,2,0.96,M1,ref:car(SUV),4.97,2,2.39,False
+august_test,Screenshot 2026-08-29 005803.png,aug_Screenshot 2026-08-29 005803.png,1,0.52,M1,ref:car(sedan),5.68,2,2.19,True
+august_test,Screenshot 2026-08-29 005803.png,aug_Screenshot 2026-08-29 005803.png,2,0.98,M1,ref:car(sedan),6.30,2,2.19,True
+august_test,Screenshot 2026-08-29 005803.png,aug_Screenshot 2026-08-29 005803.png,3,0.96,M2,ref:car(sedan),7.01,2,2.19,True
+august_test,Screenshot 2026-08-29 005815.png,aug_Screenshot 2026-08-29 005815.png,1,1.00,M1,fallback,5.29,2,8.14,False
+august_test,Screenshot 2026-08-29 005815.png,aug_Screenshot 2026-08-29 005815.png,2,0.99,M1,fallback,3.69,1,10.77,False
+august_test,Screenshot 2026-08-29 005815.png,aug_Screenshot 2026-08-29 005815.png,3,0.99,M2,fallback,7.62,3,6.78,True
+august_test,Screenshot 2026-08-29 005848.png,aug_Screenshot 2026-08-29 005848.png,1,1.00,M1,ref:car(SUV),7.27,2,6.86,False
+august_test,Screenshot 2026-08-29 005848.png,aug_Screenshot 2026-08-29 005848.png,2,1.00,M1,ref:car(SUV),7.40,2,6.29,False
+august_test,Screenshot 2026-08-29 005848.png,aug_Screenshot 2026-08-29 005848.png,3,1.00,M1,ref:car(SUV),8.84,3,10.42,False
+august_test,Screenshot 2026-08-29 005848.png,aug_Screenshot 2026-08-29 005848.png,4,0.51,M2,ref:car(SUV),7.35,2,11.29,False
+august_test,Screenshot 2026-08-29 010058.png,aug_Screenshot 2026-08-29 010058.png,1,0.66,M2,ref:car(sedan),7.16,2,7.72,True
+august_test,Screenshot 2026-08-29 010058.png,aug_Screenshot 2026-08-29 010058.png,2,1.00,M1,ref:person,8.19,3,10.03,False
+august_test,Screenshot 2026-08-29 010110.png,aug_Screenshot 2026-08-29 010110.png,1,0.91,M2,ref:car(SUV),6.45,2,11.05,False
+august_test,Screenshot 2026-08-29 010110.png,aug_Screenshot 2026-08-29 010110.png,2,0.99,M1,ref:car(SUV),9.66,3,10.19,True
+august_test,Screenshot 2026-08-29 010110.png,aug_Screenshot 2026-08-29 010110.png,3,0.77,M2,ref:car(sedan),5.62,2,4.16,False
+august_test,Screenshot 2026-08-29 010120.png,aug_Screenshot 2026-08-29 010120.png,1,0.42,M2,ref:car(SUV),5.89,2,10.27,False
+august_test,Screenshot 2026-08-29 010120.png,aug_Screenshot 2026-08-29 010120.png,2,1.00,M1,ref:car(SUV),6.16,2,10.59,False
+august_test,Screenshot 2026-08-29 010120.png,aug_Screenshot 2026-08-29 010120.png,3,0.98,M1,ref:car(SUV),9.35,3,12.11,False
+august_test,dfk.JPG,aug_dfk.JPG,1,1.00,M1,fallback,10.62,4,5.88,False
+august_test,dfk.JPG,aug_dfk.JPG,2,0.90,M2,fallback,11.38,4,6.45,False
+august_test,djksbbjkvd.JPG,aug_djksbbjkvd.JPG,1,1.00,M2,fallback,16.05,5,9.85,False
+august_test,dlankl.JPG,aug_dlankl.JPG,1,1.00,M2,fallback,7.05,2,5.93,False
+august_test,dlkan.JPG,aug_dlkan.JPG,1,0.85,M2,fallback,5.31,2,7.84,False
+august_test,dlkan.JPG,aug_dlkan.JPG,2,1.00,M2,fallback,7.08,2,6.07,False
+august_test,dlkan.JPG,aug_dlkan.JPG,3,0.82,M1,fallback,6.74,2,7.16,False
+august_test,dnlakkld.JPG,aug_dnlakkld.JPG,1,0.59,M2,fallback,3.97,1,7.81,False
+august_test,dwfrf.JPG,aug_dwfrf.JPG,1,0.44,M2,ref:car(sedan),5.50,2,2.09,False
+august_test,edas.JPG,aug_edas.JPG,1,1.00,M2,fallback,10.82,4,6.94,False
+august_test,edas.JPG,aug_edas.JPG,2,0.61,M2,fallback,9.56,3,7.69,False
+august_test,edfw.JPG,aug_edfw.JPG,1,0.98,M1,fallback,6.26,2,6.02,False
+august_test,edfw.JPG,aug_edfw.JPG,2,0.99,M2,fallback,5.81,2,5.93,False
+august_test,ef.JPG,aug_ef.JPG,1,0.99,M1,fallback,8.78,3,6.72,False
+august_test,efjkqn_kle.JPG,aug_efjkqn_kle.JPG,1,0.96,M2,ref:car(sedan),10.15,3,2.99,False
+august_test,efwnl_k.JPG,aug_efwnl_k.JPG,1,0.94,M2,fallback,6.64,2,6.59,False
+august_test,egnktl_n.JPG,aug_egnktl_n.JPG,1,0.98,M2,ref:car(sedan),34.05,11,10.37,False
+august_test,"ejk,bgje.JPG","aug_ejk,bgje.JPG",1,0.98,M1,fallback,9.70,3,5.72,True
+august_test,ejkf.JPG,aug_ejkf.JPG,1,1.00,M2,fallback,12.50,4,7.81,False
+august_test,ekjbgrjksb.JPG,aug_ekjbgrjksb.JPG,1,0.99,M2,fallback,7.11,2,7.04,False
+august_test,elgnkgkln.JPG,aug_elgnkgkln.JPG,1,1.00,M1,ref:person,4.51,2,3.57,False
+august_test,enakrbgj.JPG,aug_enakrbgj.JPG,1,0.97,M1,ref:car(sedan),11.69,4,2.05,True
+august_test,erf.JPG,aug_erf.JPG,1,1.00,M1,fallback,5.26,2,5.75,False
+august_test,etgmkne_.JPG,aug_etgmkne_.JPG,1,0.84,M1,fallback,6.29,2,6.16,False
+august_test,etgmkne_.JPG,aug_etgmkne_.JPG,2,0.89,M1,fallback,5.50,2,6.09,False
+august_test,etgmkne_.JPG,aug_etgmkne_.JPG,3,0.89,M2,fallback,5.66,2,6.49,False
+august_test,etgmknlegnk.JPG,aug_etgmknlegnk.JPG,1,1.00,M1,fallback,9.02,3,5.83,False
+august_test,etkgme_.JPG,aug_etkgme_.JPG,1,0.98,M1,ref:car(sedan),9.56,3,5.56,True
+august_test,etlnlkrn.JPG,aug_etlnlkrn.JPG,1,0.99,M2,fallback,12.08,4,6.97,True
+august_test,ewkfn.ek.JPG,aug_ewkfn.ek.JPG,1,1.00,M1,ref:person,15.36,5,3.89,False
+august_test,ewnkflwefnkl.JPG,aug_ewnkflwefnkl.JPG,1,1.00,M1,fallback,12.86,4,6.49,False
+august_test,fbgjkejk.JPG,aug_fbgjkejk.JPG,1,1.00,M1,fallback,8.53,3,6.63,False
+august_test,fbgjkejk.JPG,aug_fbgjkejk.JPG,2,0.56,M1,fallback,5.97,2,6.65,False
+august_test,fdnldla.JPG,aug_fdnldla.JPG,1,1.00,M1,fallback,6.33,2,5.72,False
+august_test,fdnldla.JPG,aug_fdnldla.JPG,2,0.96,M1,fallback,6.63,2,5.88,False
+august_test,fjksd.JPG,aug_fjksd.JPG,1,0.99,M2,fallback,5.87,2,6.49,False
+august_test,fkmdfsd.JPG,aug_fkmdfsd.JPG,1,0.95,M2,fallback,5.81,2,7.50,False
+august_test,fkmdfsd.JPG,aug_fkmdfsd.JPG,2,0.44,M1,fallback,5.62,2,6.35,False
+august_test,flsdlk.JPG,aug_flsdlk.JPG,1,0.99,M1,fallback,7.40,2,5.85,False
+august_test,flsdlk.JPG,aug_flsdlk.JPG,2,0.72,M1,fallback,9.33,3,6.57,False
+august_test,flsdlk.JPG,aug_flsdlk.JPG,3,0.99,M1,fallback,6.82,2,7.47,False
+august_test,fnjk.JPG,aug_fnjk.JPG,1,1.00,M2,fallback,6.11,2,5.66,False
+august_test,fnlsds.JPG,aug_fnlsds.JPG,1,0.95,M1,ref:car(sedan),15.62,5,6.64,False
+august_test,fsbm.JPG,aug_fsbm.JPG,1,1.00,M1,fallback,16.06,5,9.32,False
+august_test,fsv.JPG,aug_fsv.JPG,1,1.00,M1,fallback,11.94,4,5.73,False
+august_test,gnkjrbg.JPG,aug_gnkjrbg.JPG,1,0.50,M1,ref:person,10.81,4,14.81,False
+august_test,gnkjrbg.JPG,aug_gnkjrbg.JPG,2,1.00,M2,ref:person,10.26,3,23.85,False
+august_test,jedfa.JPG,aug_jedfa.JPG,1,0.69,M2,fallback,11.80,4,6.51,False
+august_test,jedfa.JPG,aug_jedfa.JPG,2,0.98,M2,fallback,15.31,5,6.76,False
+august_test,jgnaernr.JPG,aug_jgnaernr.JPG,1,1.00,M1,ref:car(SUV),5.18,2,26.15,False
+august_test,jgnaernr.JPG,aug_jgnaernr.JPG,2,0.46,M2,ref:car(SUV),5.87,2,26.15,False
+august_test,jkbjl.JPG,aug_jkbjl.JPG,1,0.98,M1,ref:car(SUV),5.80,2,8.62,False
+august_test,jkbjl.JPG,aug_jkbjl.JPG,2,0.93,M2,ref:car(SUV),5.76,2,8.32,False
+august_test,jkrf.JPG,aug_jkrf.JPG,1,0.69,M2,fallback,7.93,3,6.39,False
+august_test,jkrf.JPG,aug_jkrf.JPG,2,0.63,M2,fallback,6.18,2,6.37,False
+august_test,jkrf.JPG,aug_jkrf.JPG,3,0.81,M2,fallback,7.74,3,6.39,False
+august_test,jktgeekjb.JPG,aug_jktgeekjb.JPG,1,1.00,M2,fallback,7.10,2,5.69,False
+august_test,"jsdbjs,dn.JPG","aug_jsdbjs,dn.JPG",1,0.97,M1,fallback,9.06,3,6.61,False
+august_test,"jsdbjs,dn.JPG","aug_jsdbjs,dn.JPG",2,0.57,M2,fallback,5.72,2,7.26,False
+august_test,jsefb.JPG,aug_jsefb.JPG,1,1.00,M1,fallback,11.16,4,6.81,False
+august_test,kefnw_kl.JPG,aug_kefnw_kl.JPG,1,0.58,M2,fallback,8.79,3,7.52,True
+august_test,kefnw_kl.JPG,aug_kefnw_kl.JPG,2,0.99,M1,fallback,8.85,3,6.29,True
+august_test,kenfjkrk.JPG,aug_kenfjkrk.JPG,1,0.98,M1,fallback,8.48,3,7.42,False
+august_test,kenfjkrk.JPG,aug_kenfjkrk.JPG,2,0.48,M1,fallback,11.98,4,7.50,True
+august_test,kfbgkrgbk.JPG,aug_kfbgkrgbk.JPG,1,1.00,M2,fallback,7.62,3,5.98,False
+august_test,kfrkrf.JPG,aug_kfrkrf.JPG,1,0.99,M2,fallback,9.24,3,7.50,False
+august_test,kfrkrf.JPG,aug_kfrkrf.JPG,2,0.95,M1,fallback,8.41,3,7.44,False
+august_test,klwn.JPG,aug_klwn.JPG,1,0.98,M1,fallback,22.62,8,8.88,False
+august_test,kwnfwke.JPG,aug_kwnfwke.JPG,1,0.94,M2,fallback,5.39,2,6.27,False
+august_test,lkfnwlke.JPG,aug_lkfnwlke.JPG,1,1.00,M1,ref:car(sedan),20.09,7,3.35,False
+august_test,lkmwfne_kl.JPG,aug_lkmwfne_kl.JPG,1,0.99,M2,fallback,9.64,3,6.87,False
+august_test,lrknwkl.JPG,aug_lrknwkl.JPG,1,0.96,M2,ref:car(SUV),6.23,2,31.28,True
+august_test,lrknwkl.JPG,aug_lrknwkl.JPG,2,0.97,M1,ref:car(SUV),6.54,2,16.81,False
+august_test,nlgrrkle.JPG,aug_nlgrrkle.JPG,1,0.83,M2,fallback,5.15,2,6.18,False
+august_test,nlgrrkle.JPG,aug_nlgrrkle.JPG,2,0.97,M2,fallback,7.19,2,5.72,False
+august_test,nlgrrkle.JPG,aug_nlgrrkle.JPG,3,0.68,M1,fallback,5.34,2,5.81,False
+august_test,nlgrrkle.JPG,aug_nlgrrkle.JPG,4,0.79,M1,fallback,5.74,2,5.67,False
+august_test,qekljndl.JPG,aug_qekljndl.JPG,1,0.78,M2,fallback,14.26,5,9.15,False
+august_test,qekljndl.JPG,aug_qekljndl.JPG,2,1.00,M2,fallback,14.98,5,8.69,True
+august_test,rfnkrk.JPG,aug_rfnkrk.JPG,1,1.00,M2,fallback,11.84,4,5.91,False
+august_test,rfnl.JPG,aug_rfnl.JPG,1,0.59,M2,ref:person,6.44,2,2.10,False
+august_test,rfnl.JPG,aug_rfnl.JPG,2,1.00,M1,ref:person,7.26,2,1.77,False
+august_test,rgkjfbas.JPG,aug_rgkjfbas.JPG,1,1.00,M1,fallback,9.98,3,6.74,False
+august_test,rgkjfbas.JPG,aug_rgkjfbas.JPG,2,0.71,M2,ref:car(SUV),23.19,8,16.36,False
+august_test,rjwkafbl.JPG,aug_rjwkafbl.JPG,1,0.98,M1,fallback,9.89,3,6.29,True
+august_test,rkelnwrl.JPG,aug_rkelnwrl.JPG,1,0.93,M2,fallback,5.11,2,5.25,False
+august_test,sfln.JPG,aug_sfln.JPG,1,1.00,M1,fallback,6.40,2,6.03,False
+august_test,sfln.JPG,aug_sfln.JPG,2,0.76,M2,fallback,4.38,1,6.47,False
+august_test,sjnfvj.JPG,aug_sjnfvj.JPG,1,1.00,M2,fallback,5.28,2,5.69,False
+august_test,w grwkl.JPG,aug_w grwkl.JPG,1,0.96,M1,fallback,10.80,4,6.99,False
+august_test,w_fmw_fm.JPG,aug_w_fmw_fm.JPG,1,1.00,M1,fallback,9.46,3,5.88,False
+august_test,wfljbsj.JPG,aug_wfljbsj.JPG,1,0.63,M1,ref:motorcycle,7.45,2,8.17,False
+august_test,wfljbsj.JPG,aug_wfljbsj.JPG,2,0.99,M1,fallback,13.41,4,6.35,True
+august_test,wfnl.JPG,aug_wfnl.JPG,1,0.99,M2,fallback,8.78,3,6.68,False
+august_test,wklfan.JPG,aug_wklfan.JPG,1,0.59,M1,fallback,8.53,3,8.21,False
+august_test,wklfan.JPG,aug_wklfan.JPG,2,1.00,M1,fallback,9.61,3,6.37,False
+august_test,wklfan.JPG,aug_wklfan.JPG,3,0.70,M2,fallback,7.17,2,6.18,False
+august_test,wlfnlk.JPG,aug_wlfnlk.JPG,1,1.00,M1,fallback,9.29,3,5.35,False
+august_test,wlfnwelkfn.JPG,aug_wlfnwelkfn.JPG,1,1.00,M1,fallback,7.25,2,5.90,False
+august_test,wlfnwelkfn.JPG,aug_wlfnwelkfn.JPG,2,0.54,M2,fallback,5.94,2,6.05,False
+august_test,wnkflwfkl.JPG,aug_wnkflwfkl.JPG,1,1.00,M1,fallback,15.38,5,7.18,False
+august_test,wrklngwrkl.JPG,aug_wrklngwrkl.JPG,1,1.00,M1,ref:car(SUV),8.02,3,1.40,False
+august_test,zsrbgkrj.JPG,aug_zsrbgkrj.JPG,1,1.00,M1,fallback,7.54,3,6.45,False
+august_test,zsrbgkrj.JPG,aug_zsrbgkrj.JPG,2,0.58,M1,fallback,6.98,2,7.58,False
+val_anu,g100.jpeg,val_g100.jpeg,1,0.79,M1,ref:motorcycle,4.73,2,0.99,False
+val_anu,g100.jpeg,val_g100.jpeg,2,1.00,M1,ref:motorcycle,2.62,1,1.44,False
+val_anu,g101.jpeg,val_g101.jpeg,1,1.00,M1,ref:motorcycle,4.47,1,1.49,False
+val_anu,g102.jpeg,val_g102.jpeg,1,1.00,M1,fallback,10.88,4,7.14,False
+val_anu,g103.jpeg,val_g103.jpeg,1,1.00,M1,fallback,16.39,5,7.96,False
+val_anu,g104.jpeg,val_g104.jpeg,1,1.00,M1,fallback,14.96,5,6.90,False
+val_anu,g105.jpeg,val_g105.jpeg,1,1.00,M1,ref:bicycle,3.88,1,1.42,False
+val_anu,g106.jpeg,val_g106.jpeg,1,1.00,M1,fallback,15.08,5,7.90,False
+val_anu,g106.jpeg,val_g106.jpeg,2,0.84,M2,fallback,12.93,4,8.28,False
+val_anu,g107.jpeg,val_g107.jpeg,1,1.00,M1,fallback,6.95,2,6.70,False
+val_anu,g108.jpeg,val_g108.jpeg,1,0.98,M1,fallback,22.84,8,7.21,True
+val_anu,g109.jpeg,val_g109.jpeg,1,1.00,M1,fallback,8.38,3,7.21,False
+val_anu,g110.jpeg,val_g110.jpeg,1,0.75,M2,fallback,16.87,6,6.78,False
+val_anu,g111.jpeg,val_g111.jpeg,1,1.00,M1,fallback,12.13,4,8.28,False
+val_anu,g112.jpeg,val_g112.jpeg,1,1.00,M1,fallback,16.60,6,8.21,False
+val_anu,g113.jpeg,val_g113.jpeg,1,0.52,M2,fallback,13.08,4,6.47,False
+val_anu,g113.jpeg,val_g113.jpeg,2,1.00,M1,fallback,15.98,5,7.61,False
+val_anu,g114.jpeg,val_g114.jpeg,1,1.00,M1,fallback,6.42,2,7.72,False
+val_anu,g115.jpeg,val_g115.jpeg,1,1.00,M1,ref:car(sedan),31.16,10,5.25,False
+val_anu,g116.jpeg,val_g116.jpeg,1,1.00,M1,fallback,11.66,4,6.47,True
+val_anu,g118.jpeg,val_g118.jpeg,1,1.00,M1,fallback,14.51,5,7.31,False
+val_anu,g120.jpeg,val_g120.jpeg,1,1.00,M1,fallback,12.78,4,8.31,False
+val_anu,g121.jpeg,val_g121.jpeg,1,1.00,M1,fallback,10.19,3,9.11,False
+val_anu,g122.jpeg,val_g122.jpeg,1,1.00,M1,fallback,10.59,4,6.53,False
+val_anu,g123.jpeg,val_g123.jpeg,1,1.00,M1,fallback,6.14,2,6.05,False
+val_anu,g124.jpeg,val_g124.jpeg,1,1.00,M1,fallback,10.01,3,6.39,False
+val_anu,g125.jpeg,val_g125.jpeg,1,1.00,M1,fallback,12.93,4,9.36,False
+val_anu,g126.jpeg,val_g126.jpeg,1,1.00,M1,fallback,17.43,6,7.61,False
+val_anu,g127.jpeg,val_g127.jpeg,1,1.00,M1,fallback,9.35,3,6.27,False
+val_anu,g128.jpeg,val_g128.jpeg,1,1.00,M1,ref:motorcycle,5.13,2,2.61,False
+val_anu,g129.jpeg,val_g129.jpeg,1,1.00,M1,ref:motorcycle,3.57,1,1.91,False
+val_anu,g130.jpeg,val_g130.jpeg,1,1.00,M1,fallback,16.20,5,7.39,False
+val_anu,g131.jpeg,val_g131.jpeg,1,1.00,M1,fallback,4.75,2,6.65,False
+val_anu,g132.jpeg,val_g132.jpeg,1,1.00,M1,fallback,7.87,3,6.43,False
+val_anu,g133.jpeg,val_g133.jpeg,1,1.00,M1,fallback,12.07,4,5.72,False
+val_anu,g134.jpeg,val_g134.jpeg,1,1.00,M1,ref:motorcycle,4.18,1,2.01,False
+val_anu,g135.jpeg,val_g135.jpeg,1,1.00,M1,ref:person,12.53,4,16.74,False
+val_anu,g136.jpeg,val_g136.jpeg,1,1.00,M1,fallback,8.80,3,8.58,False
+val_anu,g137.jpeg,val_g137.jpeg,1,1.00,M1,fallback,6.67,2,7.06,False
+val_anu,g138.jpeg,val_g138.jpeg,1,1.00,M1,fallback,7.08,2,7.42,False
+val_anu,g139.jpeg,val_g139.jpeg,1,1.00,M1,fallback,6.99,2,6.70,False
+val_anu,g140.jpeg,val_g140.jpeg,1,1.00,M1,ref:car(SUV),13.88,5,9.42,False
+val_anu,g141.jpeg,val_g141.jpeg,1,1.00,M1,fallback,17.33,6,8.21,False
+val_anu,g143.jpeg,val_g143.jpeg,1,0.96,M1,ref:car(SUV),11.22,4,29.91,False
+val_anu,g144.jpeg,val_g144.jpeg,1,0.42,M2,fallback,13.17,4,7.31,False
+val_anu,g144.jpeg,val_g144.jpeg,2,0.98,M1,fallback,16.01,5,6.76,False
+val_anu,g145.jpeg,val_g145.jpeg,1,1.00,M1,fallback,18.02,6,7.06,False
+val_anu,g146.jpeg,val_g146.jpeg,1,1.00,M1,fallback,17.50,6,7.58,False
+val_anu,g147.jpeg,val_g147.jpeg,1,1.00,M1,fallback,10.03,3,8.24,False
+val_anu,g148.jpeg,val_g148.jpeg,1,1.00,M1,fallback,12.68,4,8.08,False
+val_anu,g149.jpeg,val_g149.jpeg,1,0.53,M2,ref:car(SUV),3.09,1,1.02,False
+val_anu,g150.jpeg,val_g150.jpeg,1,1.00,M1,fallback,12.22,4,7.39,False
+val_anu,g151.jpeg,val_g151.jpeg,1,1.00,M1,fallback,14.19,5,8.11,False
+val_anu,g152.jpeg,val_g152.jpeg,1,1.00,M1,ref:car(SUV),5.36,2,0.75,False
+val_anu,g153.jpeg,val_g153.jpeg,1,1.00,M1,fallback,13.32,4,7.29,False
+val_anu,g154.jpeg,val_g154.jpeg,1,1.00,M1,fallback,11.60,4,8.48,False
+val_anu,g155.jpeg,val_g155.jpeg,1,1.00,M1,fallback,9.11,3,7.04,False
+val_anu,g156.jpeg,val_g156.jpeg,1,1.00,M1,fallback,16.60,6,6.70,False
+val_anu,g157.jpeg,val_g157.jpeg,1,1.00,M2,ref:car(sedan),10.10,3,1.61,True
+val_anu,g158.jpeg,val_g158.jpeg,1,1.00,M1,fallback,9.51,3,6.10,False
+val_anu,g159.jpeg,val_g159.jpeg,1,0.60,M2,ref:person,2.72,1,1.46,False
+val_anu,g159.jpeg,val_g159.jpeg,2,1.00,M1,ref:car(SUV),4.56,2,2.77,False
+val_anu,g159.jpeg,val_g159.jpeg,3,0.64,M2,ref:car(SUV),4.41,1,2.57,False
+val_anu,g159.jpeg,val_g159.jpeg,4,0.85,M2,ref:person,4.15,1,4.42,False
+val_anu,g160.jpeg,val_g160.jpeg,1,1.00,M1,fallback,9.48,3,6.78,False
+val_anu,g160.jpeg,val_g160.jpeg,2,0.97,M2,fallback,11.20,4,8.05,False
+val_anu,g161.jpeg,val_g161.jpeg,1,1.00,M1,fallback,7.73,3,5.59,False
+val_anu,g162.jpeg,val_g162.jpeg,1,1.00,M1,ref:person,4.26,1,11.19,False
+val_anu,g163.jpeg,val_g163.jpeg,1,1.00,M1,fallback,12.02,4,6.21,True
+val_anu,g164.jpeg,val_g164.jpeg,1,1.00,M1,fallback,9.37,3,6.87,False
+val_anu,g164.jpeg,val_g164.jpeg,2,0.95,M2,ref:car(SUV),7.97,3,3.19,False
+val_anu,g165.jpeg,val_g165.jpeg,1,1.00,M1,fallback,9.71,3,6.03,False
+val_anu,g166.jpeg,val_g166.jpeg,1,1.00,M1,fallback,8.31,3,6.07,False
+val_anu,g167.jpeg,val_g167.jpeg,1,1.00,M1,fallback,17.55,6,8.55,False
+val_anu,g168.jpeg,val_g168.jpeg,1,1.00,M1,fallback,13.32,4,7.96,False
+val_anu,g169.jpeg,val_g169.jpeg,1,1.00,M1,fallback,19.88,7,7.14,False
+val_anu,g170.jpeg,val_g170.jpeg,1,1.00,M1,fallback,17.05,6,7.75,False
+val_anu,g171.jpeg,val_g171.jpeg,1,1.00,M1,fallback,19.17,6,8.62,False
+val_anu,g172.jpeg,val_g172.jpeg,1,1.00,M1,fallback,18.02,6,8.95,False
+val_anu,g173.jpeg,val_g173.jpeg,1,1.00,M1,fallback,12.58,4,8.02,False
+val_anu,g174.jpeg,val_g174.jpeg,1,1.00,M1,fallback,19.67,7,7.21,False
+val_anu,g175.jpeg,val_g175.jpeg,1,1.00,M1,fallback,9.03,3,6.83,False
+val_anu,g176.jpeg,val_g176.jpeg,1,1.00,M1,fallback,17.79,6,7.75,False
+val_anu,g177.jpeg,val_g177.jpeg,1,1.00,M1,fallback,8.24,3,7.23,False
+val_anu,g178.jpeg,val_g178.jpeg,1,1.00,M1,ref:car(SUV),8.40,3,0.98,True
+val_anu,g178.jpeg,val_g178.jpeg,2,0.52,M2,fallback,14.94,5,6.94,False
+val_anu,g179.jpeg,val_g179.jpeg,1,1.00,M1,fallback,11.05,4,6.03,False
+val_anu,g180.jpeg,val_g180.jpeg,1,1.00,M1,fallback,18.57,6,6.92,False
+val_anu,g181.jpeg,val_g181.jpeg,1,1.00,M1,fallback,19.63,7,7.50,False
+val_anu,g182.jpeg,val_g182.jpeg,1,1.00,M1,fallback,19.02,6,8.38,False
+val_anu,g183.jpeg,val_g183.jpeg,1,1.00,M1,fallback,12.05,4,5.56,False
+val_anu,g184.jpeg,val_g184.jpeg,1,1.00,M1,ref:car(SUV),6.73,2,1.15,False
+val_anu,g185.jpeg,val_g185.jpeg,1,1.00,M1,fallback,18.69,6,6.92,False
+val_anu,g186.jpeg,val_g186.jpeg,1,1.00,M1,fallback,15.14,5,7.31,False
+val_anu,g187.jpeg,val_g187.jpeg,1,1.00,M1,fallback,18.58,6,7.23,False
+val_anu,g188.jpeg,val_g188.jpeg,1,1.00,M1,fallback,15.71,5,7.09,False
+val_anu,g189.jpeg,val_g189.jpeg,1,1.00,M1,fallback,11.89,4,8.38,False
+val_anu,g189.jpeg,val_g189.jpeg,2,0.72,M2,fallback,11.99,4,6.70,True
+val_anu,g190.jpeg,val_g190.jpeg,1,1.00,M1,ref:person,18.97,6,24.28,False
+val_anu,g191.jpeg,val_g191.jpeg,1,1.00,M1,fallback,13.54,5,7.61,False
+val_anu,g192.jpeg,val_g192.jpeg,1,1.00,M1,fallback,18.98,6,7.14,False
+val_anu,g193.jpeg,val_g193.jpeg,1,0.55,M1,fallback,7.46,2,6.33,False
+val_anu,g194.jpeg,val_g194.jpeg,1,1.00,M1,fallback,16.62,6,7.84,False
+val_anu,g195.jpeg,val_g195.jpeg,1,1.00,M1,fallback,19.99,7,8.84,False
+val_anu,g196.jpeg,val_g196.jpeg,1,1.00,M1,fallback,17.44,6,7.63,False
+val_anu,g197.jpeg,val_g197.jpeg,1,1.00,M1,fallback,13.90,5,7.84,False
+val_anu,g198.jpeg,val_g198.jpeg,1,1.00,M1,fallback,15.18,5,5.77,False
+val_anu,g199.jpeg,val_g199.jpeg,1,1.00,M1,fallback,21.17,7,6.94,False
+val_anu,g200.jpeg,val_g200.jpeg,1,1.00,M1,fallback,5.69,2,5.35,False
+val_anu,g201.jpeg,val_g201.jpeg,1,1.00,M1,fallback,11.22,4,7.34,False
+val_anu,g202.jpeg,val_g202.jpeg,1,1.00,M1,ref:person,13.46,4,15.25,False
+val_anu,g203.jpeg,val_g203.jpeg,1,1.00,M1,ref:car(SUV),2.98,1,1.52,False
+val_anu,g204.jpeg,val_g204.jpeg,1,1.00,M1,fallback,14.87,5,5.83,False
+val_anu,g205.jpeg,val_g205.jpeg,1,1.00,M1,ref:car(SUV),8.40,3,1.04,False
+val_anu,g76.jpeg,val_g76.jpeg,1,1.00,M1,ref:car(SUV),6.77,2,1.93,False
+val_anu,g76.jpeg,val_g76.jpeg,2,0.91,M2,ref:car(SUV),5.93,2,1.70,False
+val_anu,g77.jpeg,val_g77.jpeg,1,0.96,M2,fallback,9.93,3,7.31,False
+val_anu,g77.jpeg,val_g77.jpeg,2,1.00,M1,fallback,12.49,4,7.16,True
+val_anu,g78.jpeg,val_g78.jpeg,1,1.00,M1,ref:motorcycle,4.17,1,3.12,False
+val_anu,g79.jpeg,val_g79.jpeg,1,1.00,M1,ref:person,8.45,3,21.56,False
+val_anu,g79.jpeg,val_g79.jpeg,2,0.65,M2,ref:person,8.10,3,14.84,False
+val_anu,g80.jpeg,val_g80.jpeg,1,1.00,M2,ref:motorcycle,3.32,1,6.14,False
+val_anu,g81.jpeg,val_g81.jpeg,1,0.99,M1,fallback,7.60,3,6.21,False
+val_anu,g82.jpeg,val_g82.jpeg,1,0.99,M1,fallback,4.77,2,5.55,False
+val_anu,g82.jpeg,val_g82.jpeg,2,0.52,M2,fallback,4.36,1,5.70,False
+val_anu,g83.jpeg,val_g83.jpeg,1,1.00,M1,ref:motorcycle,1.95,1,2.82,False
+val_anu,g84.jpeg,val_g84.jpeg,1,1.00,M1,fallback,6.44,2,6.90,False
+val_anu,g85.jpeg,val_g85.jpeg,1,1.00,M1,ref:car(SUV),8.00,3,35.73,False
+val_anu,g86.jpeg,val_g86.jpeg,1,1.00,M1,fallback,5.97,2,6.43,False
+val_anu,g86.jpeg,val_g86.jpeg,2,0.45,M2,fallback,7.24,2,8.18,False
+val_anu,g87.jpeg,val_g87.jpeg,1,1.00,M1,fallback,7.28,2,6.25,False
+val_anu,g88.jpeg,val_g88.jpeg,1,1.00,M1,fallback,6.49,2,5.86,False
+val_anu,g88.jpeg,val_g88.jpeg,2,0.98,M2,ref:car(SUV),7.38,2,8.77,False
+val_anu,g89.jpeg,val_g89.jpeg,1,1.00,M1,ref:car(SUV),4.14,1,1.50,False
+val_anu,g89.jpeg,val_g89.jpeg,2,0.82,M2,ref:car(SUV),7.57,3,1.44,True
+val_anu,g90.jpeg,val_g90.jpeg,1,1.00,M1,fallback,18.22,6,8.73,False
+val_anu,g91.jpeg,val_g91.jpeg,1,1.00,M1,fallback,19.43,6,7.61,False
+val_anu,g95.jpeg,val_g95.jpeg,1,1.00,M1,fallback,9.11,3,7.81,False
+val_anu,g96.jpeg,val_g96.jpeg,1,1.00,M1,fallback,8.08,3,6.57,False
+val_anu,g97.jpeg,val_g97.jpeg,1,1.00,M1,ref:bicycle,3.16,1,1.00,False
+val_anu,g98.jpeg,val_g98.jpeg,1,1.00,M1,fallback,6.79,2,6.45,False
+val_anu,g99.jpeg,val_g99.jpeg,1,1.00,M1,fallback,6.17,2,6.45,False

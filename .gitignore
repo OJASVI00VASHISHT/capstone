@@ -1,0 +1,59 @@
+﻿# Virtual Environments & IDEs
+.venv/
+env/
+venv/
+ENV/
+.idea/
+.vscode/
+
+# Python Cache & Builds
+__pycache__/
+*.py[cod]
+*.class
+build/
+dist/
+*.egg-info/
+
+# Model Checkpoints & Large Weights (>100MB)
+*.pth
+*.pt
+*.bin
+*.onnx
+*.tar
+*.zip
+*.rar
+*.7z
+
+# Raw Dataset Directories (>15GB total)
+images2000/
+images2000_fixed/
+dataset_july_*/
+my_merged_coco_dataset/
+july-images/
+july/
+train/
+train2/
+images400/
+val_anu/
+manual testing/
+august_test*/
+demo_annotations/
+street_view_images/
+
+# Intermediate Pipeline Outputs
+diagnostic_fixed_distance_outputs/
+manual_testing_ensemble_outputs/
+manual_testing_results/
+final_showcase/all_outputs/
+esp32/server/uploads/*
+esp_server/uploads/*
+
+# Large Docx files (>50MB)
+Manual_Testing_Model_Comparisons.docx
+
+# System Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+images/

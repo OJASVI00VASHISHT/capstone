@@ -1,0 +1,17 @@
+# Deep Learning & Vision
+torch>=2.1.0
+torchvision>=0.16.0
+transformers>=4.40.0
+opencv-python>=4.8.0
+pillow>=10.0.0
+pycocotools>=2.0.7
+
+# Numerical & Data Science
+numpy>=1.24.0
+pandas>=2.0.0
+matplotlib>=3.7.0
+scipy>=1.11.0
+
+# Document & Report Generation
+python-docx>=1.1.0
+tqdm>=4.66.0

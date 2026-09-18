@@ -8,7 +8,7 @@ An end-to-end computer vision system designed to accurately estimate the metric 
 
 ---
 
-## ðŸ“Œ Problem Statement & Key Challenges
+##Problem Statement & Key Challenges
 
 Estimating 3D physical building heights from a single 2D monocular image is inherently ill-posed due to scale ambiguity:
 1. **Monocular Depth Scale Ambiguity:** Pretrained foundation models (e.g. Depth Anything V2) output affine-invariant *relative disparity*, which lacks absolute metric scaling. Direct linear mappings lead to 2â€“3Ã— height underestimation.
@@ -17,33 +17,10 @@ Estimating 3D physical building heights from a single 2D monocular image is inhe
 
 ---
 
-## ðŸ’¡ Proposed Solution: Multi-Model Reference Calibration
+##  Proposed Solution: Multi-Model Reference Calibration
 
 To resolve scale ambiguity without expensive LiDAR or stereo sensors, we introduce a **Reference-Object Depth Ratio Calibration Pipeline**:
 
-```
-[ Input Street-View Image ]
-           â”‚
-           â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-           â–¼                              â–¼                              â–¼
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”      â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”      â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚ Mask R-CNN Ensemble  â”‚      â”‚ Pretrained COCO R-CNNâ”‚      â”‚  Depth Anything V2   â”‚
-â”‚ (2 Fine-Tuned Models)â”‚      â”‚ (Reference Objects)  â”‚      â”‚ (Monocular Disparity)â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜      â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜      â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-           â”‚ [House BBoxes]              â”‚ [Cars, People, etc.]         â”‚ [Disparity Map]
-           â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-                                  â–¼
-                     â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-                     â”‚ Depth-Guided Roofline &  â”‚
-                     â”‚  Boundary Refinement     â”‚
-                     â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-                                  â–¼
-                     â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-                     â”‚ Reference Pairing &      â”‚
-                     â”‚ Metric Height Estimation â”‚
-                     â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-                                  â–¼
-                     [ Calibrated Metric Height ]
 ```
 
 ### Mathematical Formulation
@@ -57,7 +34,7 @@ $$H_{\text{house}} = \left(\frac{h_{\text{house}}^{\text{px}}}{h_{\text{ref}}^{\
 
 ---
 
-## ðŸš€ Key Features
+## Key Features
 
 - **Multi-Model Ensemble:** Ensemble of two fine-tuned Mask R-CNN ResNet-50 FPN models for building detection and segmentation.
 - **Multi-Class Metric Anchors:** Pretrained COCO anchors for standard metric references:
@@ -71,7 +48,7 @@ $$H_{\text{house}} = \left(\frac{h_{\text{house}}^{\text{px}}}{h_{\text{ref}}^{\
 
 ---
 
-## ðŸ“Š Results & Showcase
+## Results & Showcase
 
 Across 270 comprehensive test images (August Test Dataset + Validation Sets):
 - **Reference Calibration Rate:** 71% of buildings successfully calibrated with in-scene reference anchors.
@@ -80,7 +57,7 @@ Across 270 comprehensive test images (August Test Dataset + Validation Sets):
 
 ---
 
-## ðŸ› ï¸ Installation & Quick Start
+##  Installation & Quick Start
 
 ### 1. Clone Repository & Setup Environment
 ```bash
@@ -102,22 +79,22 @@ python inference_pipeline.py
 
 ---
 
-## ðŸ“‚ Project Structure
+##  Project Structure
 
 ```
-â”œâ”€â”€ final_showcase/
-â”‚   â”œâ”€â”€ verified_outputs/         # 130 visually verified high-accuracy estimation outputs
-â”‚   â”œâ”€â”€ all_results.csv           # Tabulated quantitative results across all test sets
-â”‚   â””â”€â”€ verified_pass_list.json   # Verified sample registry
-â”œâ”€â”€ inference_pipeline.py         # End-to-end inference and evaluation script
-â”œâ”€â”€ evaluate_metrics.py           # COCO evaluation and precision-recall metrics
-â”œâ”€â”€ requirements.txt              # Project dependencies
-â”œâ”€â”€ .gitignore                    # Standard repository exclusions
-â””â”€â”€ README.md                     # Project documentation
+final_showcase/
+verified_outputs/         # 130  outputs
+all_results.csv           # Tabulated quantitative results across all test sets
+verified_pass_list.json   # Verified sample registry
+inference_pipeline.py         # End-to-end inference and evaluation script
+evaluate_metrics.py           # COCO evaluation and precision-recall metrics
+requirements.txt              # Project dependencies
+.gitignore                    # Standard repository exclusions
+README.md                     # Project documentation
 ```
 
 ---
 
 ## ðŸ‘¥ Authors & Acknowledgments
-- Developed as part of the Senior Capstone Project on Monocular Urban Vision.
+- Developed as part of the Senior Capstone Project.
 - Model architectures built on PyTorch, TorchVision Mask R-CNN, and Depth Anything V2.

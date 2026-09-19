@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UrbanVision AI — Building Height & Zoning Compliance</title>
+    <meta name="description" content="AI-powered building height estimation and municipal zoning compliance detection from street-view imagery.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        .gradient-header { background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0369a1 100%); }
+        #map { height: 260px; width: 100%; border-radius: 0.75rem; }
+        .tab-active   { background: #0284c7; color: #fff; box-shadow: 0 2px 8px rgba(2,132,199,0.3); }
+        .tab-inactive { background: #f1f5f9; color: #64748b; }
+        .tab-inactive:hover { background: #e2e8f0; color: #475569; }
+        .pulse-ring { animation: pulse-ring 2s cubic-bezier(0.455,0.03,0.515,0.955) infinite; }
+        @keyframes pulse-ring { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+        .fade-in { animation: fadeIn 0.4s ease-in; }
+        @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+        .sample-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.10); }
+        .sample-card { transition: transform 0.15s, box-shadow 0.15s; }
+        .spin { animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col font-sans">
+
+    <!-- Header -->
+    <header class="gradient-header text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col sm:flex-row justify-between items-center gap-3">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-sky-500/20 flex items-center justify-center border border-sky-400/30 text-sky-400 text-xl font-bold">
+                    <i class="fa-solid fa-city"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight">UrbanVision AI</h1>
+                    <p class="text-xs text-sky-200">Hierarchical Height Calibration & Automatic Property Compliance</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2 text-xs">
+                <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> ML Models Loaded
+                </span>
+                <span id="liveStatusBadge" class="hidden px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-amber-400 pulse-ring"></span>
+                    <span id="liveStatusText">Live Feed Active</span>
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+            <!-- ===== LEFT COLUMN ===== -->
+            <div class="lg:col-span-5 space-y-4">
+
+                <!-- Tab Switcher -->
+                <div class="flex rounded-xl overflow-hidden border border-slate-200 p-1 bg-slate-100 gap-1">
+                    <button id="tabManualBtn" onclick="switchTab('manual')"
+                        class="flex-1 py-2 px-3 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-all tab-active">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Manual Upload
+                    </button>
+                    <button id="tabLiveBtn" onclick="switchTab('live')"
+                        class="flex-1 py-2 px-3 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-all tab-inactive">
+                        <i class="fa-solid fa-satellite-dish"></i> Live Hardware Feed
+                    </button>
+                </div>
+
+                <!-- ============================= -->
+                <!-- PANEL: Manual Upload          -->
+                <!-- ============================= -->
+                <div id="panelManual" class="space-y-4">
+
+                    <!-- Upload Card -->
+                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+                        <h2 class="text-sm font-semibold text-slate-900 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-image text-sky-600"></i> Upload Street-View Image
+                        </h2>
+
+                        <div id="dropzone" class="border-2 border-dashed border-slate-300 rounded-xl p-5 text-center hover:border-sky-500 hover:bg-sky-50/50 transition-all cursor-pointer">
+                            <input type="file" id="fileInput" accept="image/*" class="hidden">
+                            <div id="dropzoneContent" class="space-y-2">
+                                <div class="w-10 h-10 mx-auto rounded-full bg-sky-100 text-sky-600 flex items-center justify-center text-lg">
+                                    <i class="fa-solid fa-image"></i>
+                                </div>
+                                <p class="text-sm font-medium text-slate-700">Drag & drop or <span class="text-sky-600 underline">browse</span></p>
+                                <p class="text-xs text-slate-400">GPS auto-extracted from filename or EXIF</p>
+                            </div>
+                            <img id="imagePreview" class="hidden max-h-40 mx-auto rounded-lg shadow-sm mt-2" alt="Preview">
+                        </div>
+
+                        <!-- GPS Inputs -->
+                        <div class="mt-4 space-y-2">
+                            <div class="flex justify-between items-center">
+                                <label class="text-xs font-semibold text-slate-600 uppercase tracking-wider">Camera GPS (optional)</label>
+                                <span id="gpsDetectedBadge" class="text-[11px] font-medium text-slate-400">Auto-extracted</span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="block text-xs text-slate-500 mb-1">Latitude</label>
+                                    <input type="text" id="latInput" placeholder="28.6139" class="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-slate-500 mb-1">Longitude</label>
+                                    <input type="text" id="lonInput" placeholder="77.2090" class="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                                </div>
+                            </div>
+                            <!-- Zone Presets -->
+                            <div class="flex flex-wrap gap-1.5 pt-1">
+                                <span class="text-xs text-slate-400 self-center">Presets:</span>
+                                <button onclick="setLocation(28.6139, 77.2090)" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-md text-xs">R-1 (9m)</button>
+                                <button onclick="setLocation(28.5355, 77.3910)" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-md text-xs">R-2 (12m)</button>
+                                <button onclick="setLocation(28.4595, 77.0266)" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-md text-xs">Commercial (15m)</button>
+                            </div>
+                        </div>
+
+                        <button id="analyzeBtn" onclick="runManualAnalysis()" disabled
+                            class="w-full mt-4 py-2.5 px-4 bg-sky-600 hover:bg-sky-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-semibold text-sm rounded-xl shadow transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-calculator"></i> Estimate Height & Check Compliance
+                        </button>
+                    </div>
+
+                    <!-- Quick-Launch Sample Images -->
+                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+                        <h3 class="text-sm font-semibold text-slate-900 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-images text-emerald-600"></i> Quick Demo — Sample Images
+                            <span class="text-xs font-normal text-slate-400 ml-auto">Click any to analyze</span>
+                        </h3>
+                        <div id="sampleGrid" class="grid grid-cols-2 gap-2">
+                            <div class="col-span-2 text-center py-4 text-slate-400 text-xs">
+                                <i class="fa-solid fa-circle-notch spin mr-1"></i> Loading samples...
+                            </div>
+                        </div>
+                    </div>
+
+                </div><!-- /panelManual -->
+
+
+                <!-- ============================= -->
+                <!-- PANEL: Live Hardware Feed     -->
+                <!-- ============================= -->
+                <div id="panelLive" class="hidden space-y-4">
+
+                    <!-- Hardware Status Card -->
+                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-sm font-semibold text-slate-900 flex items-center gap-2">
+                                <i class="fa-solid fa-satellite-dish text-amber-500"></i> ESP32-CAM Hardware Feed
+                            </h2>
+                            <button onclick="openHwConfig()"
+                                class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg border border-slate-200 transition-all">
+                                <i class="fa-solid fa-gear"></i> Configure Hardware
+                            </button>
+                        </div>
+
+                        <!-- Status pill -->
+                        <div id="hwStatusPill" class="flex items-center gap-3 p-3 rounded-xl bg-slate-100 border border-slate-200 mb-4">
+                            <div id="hwStatusDot" class="w-3 h-3 rounded-full bg-slate-400 flex-shrink-0"></div>
+                            <div>
+                                <p id="hwStatusLabel" class="text-sm font-semibold text-slate-700">Waiting for hardware...</p>
+                                <p id="hwStatusSub" class="text-xs text-slate-400">No image received yet. Polling every 5s.</p>
+                            </div>
+                        </div>
+
+                        <!-- Timestamp + image counter -->
+                        <div class="grid grid-cols-2 gap-2 mb-4">
+                            <div class="bg-slate-50 rounded-xl p-3 border border-slate-200 text-center">
+                                <p class="text-xs text-slate-500 mb-1">Last Capture</p>
+                                <p id="hwTimestamp" class="text-xs font-bold text-slate-800">—</p>
+                            </div>
+                            <div class="bg-slate-50 rounded-xl p-3 border border-slate-200 text-center">
+                                <p class="text-xs text-slate-500 mb-1">Images Received</p>
+                                <p id="hwImgCount" class="text-xl font-black text-sky-600">0</p>
+                            </div>
+                        </div>
+
+                        <!-- Live GPS Override -->
+                        <div class="border-t border-slate-100 pt-3 space-y-2">
+                            <p class="text-xs font-semibold text-slate-600 uppercase tracking-wider">Override GPS for ESP32 images</p>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="text" id="hwLatInput" placeholder="28.6139 (lat)" class="text-xs px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-amber-400 focus:outline-none">
+                                <input type="text" id="hwLonInput" placeholder="77.2090 (lon)" class="text-xs px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-amber-400 focus:outline-none">
+                            </div>
+                            <p class="text-[11px] text-slate-400">Leave blank to use ESP32 query params or Delhi default.</p>
+                        </div>
+
+                        <!-- Polling toggle -->
+                        <div class="flex items-center justify-between mt-4 pt-3 border-t border-slate-100">
+                            <div>
+                                <p class="text-sm font-semibold text-slate-700">Auto-Polling</p>
+                                <p class="text-xs text-slate-400">Dashboard polls every 5 seconds</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="pollingToggle" checked class="sr-only peer" onchange="togglePolling()">
+                                <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-600"></div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Setup Instructions -->
+                    <div class="bg-amber-50 rounded-2xl p-4 border border-amber-200">
+                        <h4 class="text-xs font-bold text-amber-800 mb-2 flex items-center gap-1.5"><i class="fa-solid fa-triangle-exclamation"></i> Setup Checklist</h4>
+                        <ol class="text-xs text-amber-700 space-y-1 list-decimal list-inside">
+                            <li>Run <code class="bg-amber-100 px-1 rounded">ngrok http 5000</code> in a terminal</li>
+                            <li>Copy the <code class="bg-amber-100 px-1 rounded">https://xxxx.ngrok-free.app</code> URL</li>
+                            <li>Update <code class="bg-amber-100 px-1 rounded">serverUrl</code> in <code class="bg-amber-100 px-1 rounded">espcode.ino</code> → add <code class="bg-amber-100 px-1 rounded">/api/hardware-upload</code></li>
+                            <li>Flash ESP32 → point camera at building → result appears here</li>
+                        </ol>
+                    </div>
+
+                </div><!-- /panelLive -->
+
+                <!-- GIS Map (shared, always visible) -->
+                <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200">
+                    <h3 class="text-sm font-semibold text-slate-900 mb-2 flex items-center justify-between">
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-map-location-dot text-sky-600"></i> GIS Spatial Map</span>
+                        <span id="targetCoordLabel" class="text-[11px] font-normal text-slate-500"></span>
+                    </h3>
+                    <div id="map"></div>
+                    <p id="zoneSummaryText" class="text-xs text-slate-500 mt-2">Blue pin: Camera • Red pin: Target property</p>
+                </div>
+
+            </div><!-- /left column -->
+
+
+            <!-- ===== RIGHT COLUMN: Results ===== -->
+            <div class="lg:col-span-7 space-y-5">
+
+                <!-- Empty state -->
+                <div id="emptyState" class="bg-white rounded-2xl p-12 text-center shadow-sm border border-slate-200 flex flex-col items-center justify-center min-h-[480px]">
+                    <div class="w-16 h-16 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center text-3xl mb-4">
+                        <i class="fa-solid fa-ruler-combined"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-slate-800">No Analysis Yet</h3>
+                    <p class="text-sm text-slate-500 max-w-sm mt-1">Upload an image manually or switch to Live Hardware Feed and point the ESP32 at a building.</p>
+                </div>
+
+                <!-- Loading state -->
+                <div id="loadingState" class="hidden bg-white rounded-2xl p-12 text-center shadow-sm border border-slate-200 flex flex-col items-center justify-center min-h-[480px]">
+                    <div class="w-12 h-12 border-4 border-sky-200 border-t-sky-600 rounded-full animate-spin mb-4"></div>
+                    <h3 class="text-base font-semibold text-slate-800" id="loadingLabel">Running Hierarchical Analysis...</h3>
+                    <p class="text-xs text-slate-400 max-w-xs mt-2">
+                        1. Detecting Buildings & Reference Objects<br>
+                        2. Depth-Calibrated Height Estimation<br>
+                        3. GPS Projection & Zoning Compliance Check
+                    </p>
+                </div>
+
+                <!-- Results view -->
+                <div id="resultsView" class="hidden fade-in space-y-5">
+
+                    <!-- Source badge -->
+                    <div id="resultSourceBadge" class="flex items-center gap-2 text-xs font-medium text-slate-500">
+                        <i class="fa-solid fa-circle-info text-sky-400"></i>
+                        <span id="resultSourceText">Manual Upload</span>
+                        <span id="resultTimestampText" class="ml-auto text-slate-400"></span>
+                    </div>
+
+                    <!-- Target Focus Card -->
+                    <div id="targetFocusCard" class="bg-gradient-to-r from-slate-900 to-slate-800 text-white rounded-2xl p-5 shadow-md border border-slate-700 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 text-xs font-bold uppercase tracking-wider">
+                                    ★ Auto-Targeted Property
+                                </span>
+                                <span id="targetBuildingIdTag" class="text-xs font-semibold text-slate-300"></span>
+                            </div>
+                            <h3 id="targetHeightHeading" class="text-2xl font-black text-white"></h3>
+                            <p id="targetGpsOffset" class="text-xs text-slate-400"></p>
+                        </div>
+                        <div id="targetComplianceBadge" class="px-4 py-2 rounded-xl text-center font-bold text-sm"></div>
+                    </div>
+
+                    <!-- Annotated Image -->
+                    <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Annotated Visual Output</span>
+                            <a id="downloadImageBtn" href="#" download="urbanvision_output.jpg" class="text-xs text-sky-600 hover:text-sky-800 font-medium flex items-center gap-1">
+                                <i class="fa-solid fa-download"></i> Save Image
+                            </a>
+                        </div>
+                        <div class="rounded-xl overflow-hidden bg-slate-900 border border-slate-200">
+                            <img id="annotatedResultImg" class="w-full object-contain" alt="Analyzed Result">
+                        </div>
+                    </div>
+
+                    <!-- Building Cards List -->
+                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+                        <h4 class="text-sm font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-sky-600"></i> All Detected Buildings
+                        </h4>
+                        <div id="buildingCardsContainer" class="space-y-3"></div>
+                    </div>
+
+                </div><!-- /resultsView -->
+
+            </div><!-- /right column -->
+
+        </div>
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 py-3 text-center text-xs text-slate-400">
+        UrbanVision AI &bull; Senior Capstone Project &bull; Monocular Building Height & Municipal Zoning Compliance
+    </footer>
+
+    <script>
+    // =====================================================================
+    // STATE
+    // =====================================================================
+    let selectedFile = null;
+    let map, camMarker, targetMarker, rayLine, zoneCircle;
+    let currentTab = 'manual';
+    let pollingActive = true;
+    let pollingTimer = null;
+    let hwImageCount = 0;
+    let lastHwTimestamp = null;
+
+    // =====================================================================
+    // MAP
+    // =====================================================================
+    function initMap(camLat = 28.6139, camLon = 77.2090, targetLat = null, targetLon = null, zoneRadius = 5000) {
+        if (!map) {
+            map = L.map('map').setView([camLat, camLon], 16);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19, attribution: '© OpenStreetMap'
+            }).addTo(map);
+        } else {
+            map.setView([camLat, camLon], 16);
+        }
+        [camMarker, targetMarker, rayLine, zoneCircle].forEach(l => { if (l) map.removeLayer(l); });
+
+        zoneCircle = L.circle([camLat, camLon], {
+            color: '#0284c7', fillColor: '#38bdf8', fillOpacity: 0.10, radius: zoneRadius
+        }).addTo(map);
+
+        camMarker = L.circleMarker([camLat, camLon], {
+            radius: 8, fillColor: "#0284c7", color: "#fff", weight: 2, fillOpacity: 0.9
+        }).addTo(map).bindPopup("<b>Camera / Sensor Position</b>");
+
+        if (targetLat && targetLon) {
+            targetMarker = L.circleMarker([targetLat, targetLon], {
+                radius: 10, fillColor: "#e11d48", color: "#fde047", weight: 3, fillOpacity: 0.95
+            }).addTo(map).bindPopup("<b>Target Property</b>");
+            rayLine = L.polyline([[camLat, camLon], [targetLat, targetLon]], {
+                color: '#e11d48', dashArray: '4, 6', weight: 2
+            }).addTo(map);
+            map.fitBounds(new L.featureGroup([camMarker, targetMarker]).getBounds().pad(0.4));
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        initMap();
+        loadSampleImages();
+        startPolling();
+    });
+
+    // =====================================================================
+    // TAB SWITCHING
+    // =====================================================================
+    function switchTab(tab) {
+        currentTab = tab;
+        const isManual = tab === 'manual';
+        document.getElementById('panelManual').classList.toggle('hidden', !isManual);
+        document.getElementById('panelLive').classList.toggle('hidden', isManual);
+        document.getElementById('tabManualBtn').className = `flex-1 py-2 px-3 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-all ${isManual ? 'tab-active' : 'tab-inactive'}`;
+        document.getElementById('tabLiveBtn').className   = `flex-1 py-2 px-3 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-all ${!isManual ? 'tab-active' : 'tab-inactive'}`;
+        document.getElementById('liveStatusBadge').classList.toggle('hidden', isManual);
+    }
+
+    // =====================================================================
+    // MANUAL UPLOAD
+    // =====================================================================
+    const dropzone       = document.getElementById("dropzone");
+    const fileInput      = document.getElementById("fileInput");
+    const imagePreview   = document.getElementById("imagePreview");
+    const dropzoneContent = document.getElementById("dropzoneContent");
+
+    dropzone.addEventListener("click", () => fileInput.click());
+    fileInput.addEventListener("change", e => handleFileSelect(e.target.files[0]));
+    dropzone.addEventListener("dragover", e => { e.preventDefault(); dropzone.classList.add("border-sky-500","bg-sky-50"); });
+    dropzone.addEventListener("dragleave", () => dropzone.classList.remove("border-sky-500","bg-sky-50"));
+    dropzone.addEventListener("drop", e => {
+        e.preventDefault();
+        dropzone.classList.remove("border-sky-500","bg-sky-50");
+        if (e.dataTransfer.files.length > 0) handleFileSelect(e.dataTransfer.files[0]);
+    });
+
+    function handleFileSelect(file) {
+        if (!file || !file.type.startsWith("image/")) return;
+        selectedFile = file;
+        const reader = new FileReader();
+        reader.onload = e => {
+            imagePreview.src = e.target.result;
+            imagePreview.classList.remove("hidden");
+            dropzoneContent.classList.add("hidden");
+        };
+        reader.readAsDataURL(file);
+        document.getElementById("analyzeBtn").disabled = false;
+
+        // Auto-extract GPS from filename
+        const coordMatch = file.name.match(/(?:lat[_-]?)?(-?\d{1,3}\.\d{3,8})[_\-, ]+(?:lon[_-]?)?(-?\d{1,3}\.\d{3,8})/i);
+        if (coordMatch) {
+            document.getElementById("latInput").value = coordMatch[1];
+            document.getElementById("lonInput").value = coordMatch[2];
+            document.getElementById("gpsDetectedBadge").textContent = "✓ GPS from filename";
+            document.getElementById("gpsDetectedBadge").className = "text-[11px] font-medium text-emerald-600";
+            initMap(parseFloat(coordMatch[1]), parseFloat(coordMatch[2]));
+        } else {
+            document.getElementById("gpsDetectedBadge").textContent = "Using default / manual GPS";
+            document.getElementById("gpsDetectedBadge").className = "text-[11px] font-medium text-slate-400";
+        }
+    }
+
+    function setLocation(lat, lon) {
+        document.getElementById("latInput").value = lat;
+        document.getElementById("lonInput").value = lon;
+        initMap(lat, lon);
+    }
+
+    async function runManualAnalysis() {
+        if (!selectedFile) return;
+        showLoading("Running ML Analysis...");
+
+        const formData = new FormData();
+        formData.append("image", selectedFile);
+        const lat = document.getElementById("latInput").value;
+        const lon = document.getElementById("lonInput").value;
+        if (lat) formData.append("latitude", lat);
+        if (lon) formData.append("longitude", lon);
+
+        try {
+            const res = await fetch("/api/analyze", { method: "POST", body: formData });
+            const result = await res.json();
+            hideLoading();
+            document.getElementById("analyzeBtn").disabled = false;
+            if (result.status === "success") {
+                renderResults(result, "Manual Upload");
+            } else {
+                alert("Analysis error: " + result.message);
+                showEmpty();
+            }
+        } catch (err) {
+            hideLoading();
+            document.getElementById("analyzeBtn").disabled = false;
+            alert("Network error: " + err.message);
+            showEmpty();
+        }
+    }
+
+    // =====================================================================
+    // SAMPLE IMAGES QUICK-LAUNCH
+    // =====================================================================
+    async function loadSampleImages() {
+        try {
+            const res = await fetch("/api/samples");
+            const data = await res.json();
+            const grid = document.getElementById("sampleGrid");
+            if (!data.files || data.files.length === 0) {
+                grid.innerHTML = '<p class="col-span-2 text-xs text-slate-400 text-center py-2">No sample images found in sample_images/</p>';
+                return;
+            }
+            grid.innerHTML = data.files.map(f => {
+                const isIllegal = f.toLowerCase().includes("illegal") || f.toLowerCase().includes("violation");
+                const badge = isIllegal
+                    ? '<span class="absolute top-1 right-1 px-1.5 py-0.5 bg-rose-500 text-white text-[9px] font-bold rounded">ILLEGAL</span>'
+                    : '<span class="absolute top-1 right-1 px-1.5 py-0.5 bg-emerald-500 text-white text-[9px] font-bold rounded">LEGAL</span>';
+                const label = f.replace(/_/g,' ').replace(/\.png|\.jpg|\.jpeg/gi,'').substring(0,40);
+                return `
+                    <div class="sample-card relative border border-slate-200 rounded-xl overflow-hidden bg-white cursor-pointer group" onclick="analyzeSample('${f}')">
+                        <img src="/api/samples/${encodeURIComponent(f)}" alt="${f}" class="w-full h-24 object-cover group-hover:opacity-90 transition-opacity" loading="lazy">
+                        ${badge}
+                        <div class="p-2">
+                            <p class="text-[10px] text-slate-600 font-medium truncate">${label}</p>
+                            <p class="text-[10px] text-sky-600 font-semibold mt-0.5 flex items-center gap-1"><i class="fa-solid fa-play text-[8px]"></i> Analyze</p>
+                        </div>
+                    </div>`;
+            }).join('');
+        } catch (e) {
+            document.getElementById("sampleGrid").innerHTML = '<p class="col-span-2 text-xs text-slate-400 text-center py-2">Could not load samples.</p>';
+        }
+    }
+
+    async function analyzeSample(filename) {
+        // Fetch the sample image as a blob, then submit it like a manual upload
+        showLoading(`Analyzing sample: ${filename}`);
+        try {
+            const imgRes = await fetch(`/api/samples/${encodeURIComponent(filename)}`);
+            const blob = await imgRes.blob();
+            const file = new File([blob], filename, { type: blob.type });
+
+            const formData = new FormData();
+            formData.append("image", file);
+
+            // Auto-extract GPS from filename
+            const coordMatch = filename.match(/(?:lat[_-]?)?(-?\d{1,3}\.\d{3,8})[_\-, ]+(?:lon[_-]?)?(-?\d{1,3}\.\d{3,8})/i);
+            if (coordMatch) {
+                formData.append("latitude", coordMatch[1]);
+                formData.append("longitude", coordMatch[2]);
+            }
+
+            const res = await fetch("/api/analyze", { method: "POST", body: formData });
+            const result = await res.json();
+            hideLoading();
+            if (result.status === "success") {
+                renderResults(result, `Sample: ${filename}`);
+            } else {
+                alert("Error: " + result.message);
+                showEmpty();
+            }
+        } catch (err) {
+            hideLoading();
+            alert("Error: " + err.message);
+            showEmpty();
+        }
+    }
+
+    // =====================================================================
+    // LIVE HARDWARE FEED — POLLING
+    // =====================================================================
+    function startPolling() {
+        if (pollingTimer) clearInterval(pollingTimer);
+        pollingTimer = setInterval(pollLatest, 5000);
+    }
+
+    function togglePolling() {
+        pollingActive = document.getElementById("pollingToggle").checked;
+        if (pollingActive) {
+            startPolling();
+        } else {
+            if (pollingTimer) clearInterval(pollingTimer);
+        }
+    }
+
+    async function pollLatest() {
+        if (!pollingActive) return;
+        try {
+            const res = await fetch("/api/latest");
+            const data = await res.json();
+            updateHardwareStatus(data);
+        } catch (e) {
+            // Silent fail - server may be loading
+        }
+    }
+
+    function updateHardwareStatus(data) {
+        const dot    = document.getElementById("hwStatusDot");
+        const label  = document.getElementById("hwStatusLabel");
+        const sub    = document.getElementById("hwStatusSub");
+        const ts     = document.getElementById("hwTimestamp");
+        const liveText = document.getElementById("liveStatusText");
+
+        if (data.status === "waiting") {
+            dot.className   = "w-3 h-3 rounded-full bg-slate-400 flex-shrink-0";
+            label.textContent = "Waiting for hardware...";
+            sub.textContent   = "No image received yet. Polling every 5s.";
+            liveText.textContent = "Waiting for ESP32";
+
+        } else if (data.status === "processing") {
+            dot.className   = "w-3 h-3 rounded-full bg-amber-400 flex-shrink-0 pulse-ring";
+            label.textContent = "Analyzing image...";
+            sub.textContent   = `Received at ${data.timestamp} — ML pipeline running`;
+            liveText.textContent = "Analyzing...";
+            ts.textContent    = data.timestamp || "—";
+
+            // Show loading in results only if we're on live tab
+            if (currentTab === 'live') showLoading("Analyzing ESP32 image...");
+
+        } else if (data.status === "ready") {
+            // New result arrived
+            if (data.timestamp !== lastHwTimestamp) {
+                lastHwTimestamp = data.timestamp;
+                hwImageCount++;
+                document.getElementById("hwImgCount").textContent = hwImageCount;
+                ts.textContent = data.timestamp;
+
+                dot.className   = "w-3 h-3 rounded-full bg-emerald-400 flex-shrink-0";
+                label.textContent = "Live — Last image analyzed";
+                sub.textContent   = `Captured at ${data.timestamp}`;
+                liveText.textContent = "Live Feed Active";
+
+                if (currentTab === 'live' && data.data) {
+                    renderResults(data.data, "ESP32 Hardware", data.timestamp);
+                }
+            }
+
+        } else if (data.status === "error") {
+            dot.className   = "w-3 h-3 rounded-full bg-rose-400 flex-shrink-0";
+            label.textContent = "Analysis error";
+            sub.textContent   = data.data?.error || "Unknown error";
+            liveText.textContent = "Error";
+            if (currentTab === 'live') hideLoading();
+        }
+    }
+
+    // =====================================================================
+    // RENDER RESULTS (shared by Manual + Live Feed)
+    // =====================================================================
+    function renderResults(data, source = "Manual Upload", timestamp = null) {
+        const comp      = data.compliance;
+        const zone      = comp.zone_info;
+        const buildings = comp.buildings;
+        const target    = buildings.find(b => b.is_primary_target) || buildings[0];
+
+        // Update map
+        if (target && target.building_gps) {
+            initMap(data.gps.latitude, data.gps.longitude, target.building_gps.latitude, target.building_gps.longitude, zone.radius_meters || 5000);
+            document.getElementById("targetCoordLabel").textContent = `${target.building_gps.latitude}, ${target.building_gps.longitude}`;
+        } else {
+            initMap(data.gps.latitude, data.gps.longitude, null, null, zone.radius_meters || 5000);
+        }
+        document.getElementById("zoneSummaryText").innerHTML = `<b>${zone.zone_name}</b> &bull; Limit: <b>${zone.max_allowed_height_m}m</b> (${zone.max_allowed_floors} Fl)`;
+
+        // Source badge
+        const srcIcon = source.includes("ESP32") ? "fa-satellite-dish" : (source.includes("Sample") ? "fa-images" : "fa-cloud-arrow-up");
+        document.getElementById("resultSourceText").innerHTML = `<i class="fa-solid ${srcIcon} mr-1"></i>${source} &bull; GPS: ${data.gps.source}`;
+        document.getElementById("resultTimestampText").textContent = timestamp || new Date().toLocaleTimeString();
+
+        // Target focus card
+        if (target) {
+            document.getElementById("targetBuildingIdTag").textContent = `Building #${target.house_id} (${target.method})`;
+            document.getElementById("targetHeightHeading").textContent = `${target.height_m} m (~${target.estimated_floors} Floors)`;
+            document.getElementById("targetGpsOffset").textContent = `Distance: ${target.distance_m}m • Offset ΔN ${target.building_gps?.offset_north_m ?? '?'}m, ΔE ${target.building_gps?.offset_east_m ?? '?'}m`;
+            const badge = document.getElementById("targetComplianceBadge");
+            if (target.status === "ILLEGAL") {
+                badge.className = "px-4 py-2 rounded-xl font-bold text-sm bg-rose-500 text-white shadow";
+                badge.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> ILLEGAL (+${target.height_difference_m}m)`;
+            } else if (target.status === "WARNING") {
+                badge.className = "px-4 py-2 rounded-xl font-bold text-sm bg-amber-400 text-slate-900 shadow";
+                badge.innerHTML = `<i class="fa-solid fa-exclamation-circle mr-1"></i> NEAR LIMIT`;
+            } else {
+                badge.className = "px-4 py-2 rounded-xl font-bold text-sm bg-emerald-500 text-white shadow";
+                badge.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> LEGAL`;
+            }
+        }
+
+        // Annotated image
+        document.getElementById("annotatedResultImg").src = comp.annotated_image_b64;
+        document.getElementById("downloadImageBtn").href  = comp.annotated_image_b64;
+
+        // Building cards
+        const container = document.getElementById("buildingCardsContainer");
+        container.innerHTML = buildings.map(b => {
+            const isIllegal = b.status === "ILLEGAL";
+            const isWarning = b.status === "WARNING";
+            const isTarget  = b.is_primary_target;
+            const cardBorder = isTarget ? "border-amber-400 bg-amber-50/40 ring-2 ring-amber-400/20" : (isIllegal ? "border-rose-200 bg-white" : "border-slate-200 bg-white");
+            const badgeStyle = isIllegal ? "bg-rose-100 text-rose-700 border-rose-200" : (isWarning ? "bg-amber-100 text-amber-700 border-amber-200" : "bg-emerald-100 text-emerald-700 border-emerald-200");
+            return `
+                <div class="p-4 rounded-xl border ${cardBorder} flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="text-sm font-bold text-slate-800">Building #${b.house_id}</span>
+                            ${isTarget ? '<span class="px-2 py-0.5 text-[10px] font-bold bg-amber-400 text-slate-900 rounded">TARGET</span>' : ''}
+                            <span class="px-2 py-0.5 text-[11px] font-semibold rounded border ${badgeStyle}">${b.status}</span>
+                            ${b.is_top_clipped ? '<span class="px-2 py-0.5 text-[10px] bg-sky-100 text-sky-700 rounded">Frame Clipped</span>' : ''}
+                        </div>
+                        <p class="text-xs text-slate-500">
+                            Method: <span class="font-medium text-slate-700">${b.method}</span> &bull;
+                            GPS: <span class="font-medium text-slate-700">${b.building_gps?.latitude ?? '?'}, ${b.building_gps?.longitude ?? '?'}</span> &bull;
+                            Dist: <span class="font-medium text-slate-700">${b.distance_m}m</span>
+                        </p>
+                    </div>
+                    <div class="text-right flex-shrink-0">
+                        <span class="text-lg font-black ${isIllegal ? 'text-rose-600' : 'text-slate-900'}">${b.height_m}m</span>
+                        <span class="text-xs text-slate-500"> (~${b.estimated_floors} fl)</span>
+                        <p class="text-[11px] ${isIllegal ? 'text-rose-600 font-semibold' : 'text-slate-400'}">
+                            ${isIllegal ? `Exceeds by +${b.height_difference_m}m` : `Limit: ${b.max_allowed_height_m}m`}
+                        </p>
+                    </div>
+                </div>`;
+        }).join('');
+
+        // Show results
+        document.getElementById("emptyState").classList.add("hidden");
+        document.getElementById("loadingState").classList.add("hidden");
+        document.getElementById("resultsView").classList.remove("hidden");
+        document.getElementById("resultsView").classList.add("fade-in");
+        setTimeout(() => document.getElementById("resultsView").classList.remove("fade-in"), 400);
+    }
+
+    // =====================================================================
+    // UI HELPERS
+    // =====================================================================
+    function showLoading(label = "Running ML Analysis...") {
+        document.getElementById("emptyState").classList.add("hidden");
+        document.getElementById("resultsView").classList.add("hidden");
+        document.getElementById("loadingState").classList.remove("hidden");
+        document.getElementById("loadingLabel").textContent = label;
+        if (document.getElementById("analyzeBtn"))
+            document.getElementById("analyzeBtn").disabled = true;
+    }
+
+    function hideLoading() {
+        document.getElementById("loadingState").classList.add("hidden");
+    }
+
+    function showEmpty() {
+        document.getElementById("loadingState").classList.add("hidden");
+        document.getElementById("resultsView").classList.add("hidden");
+        document.getElementById("emptyState").classList.remove("hidden");
+    }
+    </script>
+
+<!-- ============================================================ -->
+<!-- HARDWARE CONFIG MODAL                                        -->
+<!-- ============================================================ -->
+<div id="hwConfigModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/60 backdrop-blur-sm p-4" onclick="closeHwConfigOnBg(event)">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+
+        <!-- Modal Header -->
+        <div class="gradient-header text-white px-6 py-4 rounded-t-2xl flex items-center justify-between">
+            <div>
+                <h2 class="text-base font-bold flex items-center gap-2"><i class="fa-solid fa-microchip"></i> Hardware Configuration</h2>
+                <p class="text-xs text-sky-200 mt-0.5">Configure ESP32-CAM credentials &amp; generate firmware file</p>
+            </div>
+            <button onclick="closeHwConfig()" class="text-white/70 hover:text-white text-xl w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 transition-all">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="p-6 space-y-6">
+
+            <!-- What credentials are needed? -->
+            <div class="bg-sky-50 border border-sky-200 rounded-xl p-4">
+                <h3 class="text-xs font-bold text-sky-800 mb-2 flex items-center gap-1.5"><i class="fa-solid fa-circle-info"></i> What credentials does the hardware need?</h3>
+                <div class="space-y-2">
+                    <div class="flex gap-3 items-start">
+                        <span class="w-5 h-5 rounded-full bg-sky-500 text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">1</span>
+                        <div>
+                            <p class="text-xs font-semibold text-sky-900">WiFi SSID &amp; Password</p>
+                            <p class="text-[11px] text-sky-700">The network your ESP32 connects to — same network as your laptop, or a hotspot.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-3 items-start">
+                        <span class="w-5 h-5 rounded-full bg-sky-500 text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
+                        <div>
+                            <p class="text-xs font-semibold text-sky-900">Server URL</p>
+                            <p class="text-[11px] text-sky-700">The public URL where this dashboard is running (ngrok URL or your local IP). The ESP32 will POST images here.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-3 items-start">
+                        <span class="w-5 h-5 rounded-full bg-slate-400 text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">3</span>
+                        <div>
+                            <p class="text-xs font-semibold text-slate-700">Default GPS <span class="font-normal text-slate-500">(optional)</span></p>
+                            <p class="text-[11px] text-slate-500">Location used for compliance check on ESP32 images when no GPS data is available.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 1: WiFi Credentials -->
+            <div>
+                <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-wifi text-sky-500"></i> ESP32 WiFi Credentials
+                    <span class="text-xs font-normal text-slate-400">(flashed into firmware)</span>
+                </h3>
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">WiFi Network Name (SSID)</label>
+                        <input id="cfgSsid" type="text" placeholder="e.g. MyHomeWiFi"
+                            class="w-full text-sm px-3 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">WiFi Password</label>
+                        <div class="relative">
+                            <input id="cfgPassword" type="password" placeholder="WiFi password"
+                                class="w-full text-sm px-3 py-2.5 pr-10 rounded-lg border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                            <button type="button" onclick="togglePasswordVisibility()"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                                <i id="pwdEyeIcon" class="fa-solid fa-eye text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Server URL -->
+            <div>
+                <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-server text-emerald-500"></i> Dashboard Server URL
+                    <span class="text-xs font-normal text-slate-400">(where ESP32 sends images)</span>
+                </h3>
+                <div class="space-y-2">
+                    <div class="relative">
+                        <input id="cfgServerUrl" type="text" placeholder="https://xxxx.ngrok-free.app"
+                            class="w-full text-sm px-3 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="useCurrentUrl()" class="text-xs px-3 py-1.5 bg-sky-100 hover:bg-sky-200 text-sky-700 rounded-lg font-medium transition-all">
+                            <i class="fa-solid fa-link mr-1"></i> Use Current Page URL
+                        </button>
+                        <span class="text-[11px] text-slate-400 self-center">or paste your ngrok URL above</span>
+                    </div>
+                    <p class="text-[11px] text-slate-400 bg-slate-50 rounded-lg p-2 border border-slate-200">
+                        <i class="fa-solid fa-terminal mr-1"></i>
+                        Run <code class="bg-slate-200 px-1 rounded">ngrok http 5000</code> in a terminal, then paste the <code class="bg-slate-200 px-1 rounded">https://xxx.ngrok-free.app</code> URL above.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Section 3: Default GPS -->
+            <div>
+                <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-location-dot text-rose-500"></i> Default GPS for Hardware Images
+                    <span class="text-xs font-normal text-slate-400">(server-side setting)</span>
+                </h3>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Latitude</label>
+                        <input id="cfgLat" type="text" placeholder="28.6139"
+                            class="w-full text-sm px-3 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Longitude</label>
+                        <input id="cfgLon" type="text" placeholder="77.2090"
+                            class="w-full text-sm px-3 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-1.5 mt-2">
+                    <span class="text-[11px] text-slate-400 self-center">Presets:</span>
+                    <button onclick="setCfgGps(28.6139,77.2090,'Zone R-1')" class="text-[11px] px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded text-slate-600">R-1 Delhi</button>
+                    <button onclick="setCfgGps(28.5355,77.3910,'Zone R-2')" class="text-[11px] px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded text-slate-600">R-2 Delhi</button>
+                    <button onclick="setCfgGps(28.4595,77.0266,'C-1')" class="text-[11px] px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded text-slate-600">Commercial</button>
+                </div>
+            </div>
+
+            <!-- Status message -->
+            <div id="cfgStatusMsg" class="hidden text-xs rounded-lg px-3 py-2 font-medium"></div>
+
+            <!-- Action Buttons -->
+            <div class="flex gap-3 pt-2 border-t border-slate-100">
+                <button onclick="saveHwConfig()"
+                    class="flex-1 py-2.5 bg-sky-600 hover:bg-sky-700 text-white font-semibold text-sm rounded-xl shadow transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-floppy-disk"></i> Save Configuration
+                </button>
+                <button onclick="downloadCredentialsH()"
+                    class="flex-1 py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-semibold text-sm rounded-xl shadow transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-download"></i> Download credentials.h
+                </button>
+            </div>
+            <p class="text-[11px] text-slate-400 text-center -mt-2">
+                <i class="fa-solid fa-shield-halved mr-1"></i>
+                credentials.h is gitignored — never pushed to GitHub. Flash it to your ESP32 via Arduino IDE.
+            </p>
+
+        </div>
+    </div>
+</div>
+<!-- /HARDWARE CONFIG MODAL -->
+
+    <script>
+    // ===== HARDWARE CONFIG MODAL =====
+    async function openHwConfig() {
+        document.getElementById('hwConfigModal').classList.remove('hidden');
+        document.getElementById('hwConfigModal').classList.add('flex');
+        // Load saved config from server
+        try {
+            const res = await fetch('/api/hardware-config');
+            const data = await res.json();
+            if (data.status === 'success') {
+                const cfg = data.config;
+                document.getElementById('cfgSsid').value      = cfg.wifi_ssid || '';
+                document.getElementById('cfgServerUrl').value = cfg.server_url || '';
+                document.getElementById('cfgLat').value       = cfg.default_lat || 28.6139;
+                document.getElementById('cfgLon').value       = cfg.default_lon || 77.2090;
+                // Password: show placeholder if set
+                if (cfg.wifi_password_set) {
+                    document.getElementById('cfgPassword').placeholder = '(password saved — enter new to change)';
+                    document.getElementById('cfgPassword').value = '';
+                }
+            }
+        } catch (e) { /* silent */ }
+    }
+
+    function closeHwConfig() {
+        document.getElementById('hwConfigModal').classList.add('hidden');
+        document.getElementById('hwConfigModal').classList.remove('flex');
+    }
+
+    function closeHwConfigOnBg(event) {
+        if (event.target === document.getElementById('hwConfigModal')) closeHwConfig();
+    }
+
+    function togglePasswordVisibility() {
+        const input = document.getElementById('cfgPassword');
+        const icon  = document.getElementById('pwdEyeIcon');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.className = 'fa-solid fa-eye-slash text-sm';
+        } else {
+            input.type = 'password';
+            icon.className = 'fa-solid fa-eye text-sm';
+        }
+    }
+
+    function useCurrentUrl() {
+        const url = window.location.origin;
+        document.getElementById('cfgServerUrl').value = url;
+    }
+
+    function setCfgGps(lat, lon, label) {
+        document.getElementById('cfgLat').value = lat;
+        document.getElementById('cfgLon').value = lon;
+    }
+
+    function showCfgStatus(msg, isError = false) {
+        const el = document.getElementById('cfgStatusMsg');
+        el.textContent = msg;
+        el.className = `text-xs rounded-lg px-3 py-2 font-medium ${isError ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'}`;
+        el.classList.remove('hidden');
+        setTimeout(() => el.classList.add('hidden'), 4000);
+    }
+
+    async function saveHwConfig() {
+        const body = {
+            wifi_ssid:    document.getElementById('cfgSsid').value.trim(),
+            wifi_password: document.getElementById('cfgPassword').value,
+            server_url:   document.getElementById('cfgServerUrl').value.trim(),
+            default_lat:  parseFloat(document.getElementById('cfgLat').value) || 28.6139,
+            default_lon:  parseFloat(document.getElementById('cfgLon').value) || 77.2090
+        };
+        try {
+            const res  = await fetch('/api/hardware-config', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            const data = await res.json();
+            if (data.status === 'success') {
+                showCfgStatus('✓ Configuration saved to server.');
+            } else {
+                showCfgStatus('Error saving config.', true);
+            }
+        } catch (e) {
+            showCfgStatus('Network error: ' + e.message, true);
+        }
+    }
+
+    function downloadCredentialsH() {
+        // Save first, then trigger download
+        saveHwConfig().then(() => {
+            window.location.href = '/api/credentials-download';
+            showCfgStatus('✓ credentials.h downloaded — flash it to your ESP32 via Arduino IDE.');
+        });
+    }
+    </script>
+</body>
+</html>

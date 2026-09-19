@@ -5,7 +5,10 @@ import sqlite3
 import os
 import math
 
-DB_PATH = os.path.join(os.path.dirname(__file__), "zoning_regulations.db")
+_APP_DIR = os.path.dirname(os.path.abspath(__file__))
+_REPO_ROOT = os.path.dirname(_APP_DIR)
+DB_PATH = os.path.join(_REPO_ROOT, "zoning_regulations.db")
+
 
 DEFAULT_ZONES = [
     ("Residential Zone R-1 (Low Density)", 28.6139, 77.2090, 5000, 9.0, 3, "Municipal Corporation - Zone A", "Max G+2 floors allowed (9.0 meters)"),

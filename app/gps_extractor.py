@@ -7,7 +7,10 @@ import csv
 from PIL import Image
 from PIL.ExifTags import TAGS, GPSTAGS
 
-CSV_CATALOG_PATH = os.path.join(os.path.dirname(__file__), "Connected Building Landscape.csv")
+_APP_DIR = os.path.dirname(os.path.abspath(__file__))
+_REPO_ROOT = os.path.dirname(_APP_DIR)
+CSV_CATALOG_PATH = os.path.join(_REPO_ROOT, "Connected Building Landscape.csv")
+
 
 def _get_exif_gps(image_path):
     try:

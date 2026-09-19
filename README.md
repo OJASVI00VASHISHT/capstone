@@ -1,4 +1,4 @@
-﻿# Building Height Estimation from Street-View Imagery using Reference-Object Calibrated Monocular Vision
+# Building Height Estimation from Street-View Imagery using Reference-Object Calibrated Monocular Vision
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg)](https://pytorch.org/)
@@ -82,16 +82,60 @@ python inference_pipeline.py
 ##  Project Structure
 
 ```
-final_showcase/
-verified_outputs/         # 130  outputs
-all_results.csv           # Tabulated quantitative results across all test sets
-verified_pass_list.json   # Verified sample registry
-inference_pipeline.py         # End-to-end inference and evaluation script
-evaluate_metrics.py           # COCO evaluation and precision-recall metrics
-requirements.txt              # Project dependencies
-.gitignore                    # Standard repository exclusions
-README.md                     # Project documentation
+app/                              # Flask web application
+  app.py                          # Main entry point (routes, API)
+  compliance_engine.py            # Legal compliance evaluator & image annotator
+  gps_extractor.py                # Multi-strategy GPS metadata extractor
+  zoning_db.py                    # SQLite zoning regulation database interface
+  templates/
+    index.html                    # Frontend UI
+
+pipeline/                         # Core ML inference engine
+  inference_pipeline.py           # BuildingHeightEstimator class (end-to-end)
+
+training/                         # Model training & evaluation scripts
+  train_2000.py                   # Train on unified 2000-image dataset
+  train_july.py                   # Train on July 400-image dataset
+  precision.py                    # Full mAP / precision-recall benchmark
+  evaluate_metrics.py             # COCO evaluation scaffold
+
+data/                             # Annotation & dataset JSON files
+  annotations.json / annotations_fixed.json
+  images2000.json / images2000_fixed.json / images400.json
+  dataset_july_*.json
+  instances_default.json
+  precision_comparison.json / combinations_precision_results.json
+
+hardware/                         # ESP32 IoT integration
+  firmware/
+    espcode.ino                   # Arduino firmware for ESP32-CAM
+  server/
+    image_receiver.py             # Flask server to receive images from ESP32
+    server.py / newserver2.py     # ESP32 bridge server variants
+
+notebooks/                        # Jupyter notebooks (exploration & analysis)
+  main.ipynb, helper.ipynb, helper_july.ipynb
+  testing2.ipynb, testingmodel.ipynb
+  datasetdesc.ipynb, datasetdesc_july.ipynb
+
+evaluation/                       # Showcase outputs and result registries
+  final_showcase/
+    all_results.csv               # Quantitative results across all test sets
+    verified_pass_list.json       # Verified sample registry
+    verified_outputs/             # 130 verified annotated output images
+
+docs/                             # Project reports & documentation
+  Project_Report.docx
+  August_Test_Height_Estimate_Report.docx
+  Manual_Testing_Ensemble_Height_Estimate.docx
+
+sample_images/                    # Demo input images
+Connected Building Landscape.csv  # GPS catalog for image filename lookup
+requirements.txt                  # Project dependencies
+README.md                         # This file
+.gitignore
 ```
+
 
 ---
 

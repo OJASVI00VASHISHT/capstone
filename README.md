@@ -14,7 +14,7 @@ Estimating 3D physical building heights from a single 2D monocular image is inhe
 1. **Monocular Depth Scale Ambiguity:** Pretrained foundation models (e.g. Depth Anything V2) output affine-invariant *relative disparity*, which lacks absolute metric scaling. Direct linear mappings lead to 2â€“3Ã— height underestimation.
 2. **Foreground Occlusions & Wall Poisoning:** Compound walls, security gates, fences, and vehicles in front of buildings create depth discontinuities that contaminate facade depth sampling.
 3. **Bounding Box Truncation:** Standard instance segmentation often clips roofs at upper parapets or truncates multi-floor structures.
-
+..
 ---
 
 ##  Proposed Solution: Multi-Model Reference Calibration

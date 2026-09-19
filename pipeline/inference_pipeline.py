@@ -317,8 +317,20 @@ class BuildingHeightEstimator:
                     continue
 
                 ref_real_h, ref_label = get_ref_height(ref["ref_class"], ref_w, ref_h)
-                raw_ratio = ref_depth / h["depth"] if h["depth"] > 5 else 1.0
-                depth_ratio = float(np.clip(raw_ratio, 0.6, 1.8))
+                
+                # FIX: Convert 0-255 normalized depth to physical Z distance before taking ratio
+                def _norm_to_z(d_val):
+                    d_hat = d_val / 255.0
+                    inv_z = (1.0 / FALLBACK_Z_MAX_M) + d_hat * ((1.0 / FALLBACK_Z_MIN_M) - (1.0 / FALLBACK_Z_MAX_M))
+                    return float(np.clip(1.0 / max(inv_z, 1e-4), FALLBACK_Z_MIN_M, FALLBACK_Z_MAX_M))
+                
+                z_ref = _norm_to_z(ref_depth)
+                z_bldg = _norm_to_z(h["depth"])
+                
+                # Z is inversely proportional to pixel size. If building is 2x further, it appears 2x smaller.
+                # So we multiply by (z_bldg / z_ref) to compensate.
+                raw_ratio = z_bldg / z_ref
+                depth_ratio = float(np.clip(raw_ratio, 0.5, 2.0))
 
                 # Weight vehicles heavily
                 cls_wt = class_priority.get(ref["ref_class"], 1) / 10.0

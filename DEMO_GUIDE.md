@@ -1,4 +1,4 @@
-﻿# Demo Day Guide — UrbanVision AI
+# Demo Day Guide — CPG58 Illegal Construction Detection
 
 ## Before Demo Day (one-time setup)
 
@@ -35,7 +35,7 @@ Copy the  https://xxx.ngrok-free.app  URL.
 ---
 
 ## Demo Scenario A — Sample Images (No Hardware Needed)
-1. Dashboard opens on Manual Upload tab by default
+1. Browser Dashboard (CPG58 Illegal Construction Detection) — Manual Upload tab by default
 2. Scroll to "Quick Demo — Sample Images" section
 3. Click any thumbnail
 4. Wait ~15 seconds -> result appears
